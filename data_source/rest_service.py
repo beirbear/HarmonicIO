@@ -22,6 +22,12 @@ class RequestStatus(object):
         """
         GET: /status?token={None}
         """
+        if not Definition.get_str_token() in req.params:
+            res.body = "Token is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
         if req.params[Definition.get_str_token()] == Setting.get_token():
             result = self.get_machine_status()
             res.body = '{ "' + Definition.get_str_node_name() + '": "' + Setting.get_node_name() + '", \
