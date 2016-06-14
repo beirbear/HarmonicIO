@@ -119,7 +119,7 @@ class Definition(object):
     class Server(object):
         @staticmethod
         def get_str_check_master():
-            return "http://" + Setting.get_server_addr() + ":" + str(Setting.get_server_port()) + "/status"
+            return "http://" + Setting.get_server_addr() + ":" + str(Setting.get_server_port()) + "/status?token=" + Setting.get_token()
 
     class REST(object):
         @staticmethod
