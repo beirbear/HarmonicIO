@@ -36,14 +36,14 @@ if __name__ == '__main__':
     # Binding commander to the rest service and enable REST service
     pool.submit(run_rest_service)
 
+    # Create a master connector
+    from .stream_connector import StreamConnector
+    stream_connector = StreamConnector()
+
     # Wait for status
     import time
     while not Setting.is_running:
         time.sleep(Setting.get_std_idle_time())
-
-    # Create a master connector
-    from .stream_connector import StreamConnector
-    stream_connector = StreamConnector()
 
     # Create data rate simulation
     from .data_source import TupleRates
