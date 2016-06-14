@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     # Load tuples from local file
     from .data_source import LocalCachedDataSource
-    data_source = LocalCachedDataSource(source_folder='/home/ubuntu/utility/data_source', file_extension='p')
+    data_source = LocalCachedDataSource(source_folder='/home/beir_bear/data_source', file_extension='p')
 
     # Create thread for handling REST Service
     from concurrent.futures import ThreadPoolExecutor
