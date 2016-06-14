@@ -22,8 +22,8 @@ if __name__ == '__main__':
     Setting.read_cfg_from_file()
 
     # Print instance information
-    print("Node name : {0}\nNode address: {1}".format(Setting.get_node_name(), Setting.get_node_addr()))
-    print("Server address : {0}\nServer port: {1}".format(Setting.get_server_addr(), Setting.get_server_port()))
+    print("Node name: {0}\nNode address: {1}".format(Setting.get_node_name(), Setting.get_node_addr()))
+    print("Server address: {0}\nServer port: {1}".format(Setting.get_server_addr(), Setting.get_server_port()))
 
     # Load tuples from local file
     from .data_source import LocalCachedDataSource

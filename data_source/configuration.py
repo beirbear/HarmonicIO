@@ -44,30 +44,32 @@ class Setting(object):
             Services.t_print('data_source/configuration.json does not exist')
         else:
             with open('data_source/configuration.json', 'rt') as t:
-                import json
-                cfg = json.loads(t.read())
+                try:
+                    import json
+                    cfg = json.loads(t.read())
 
-                # Check for the json structure
-                if  Definition.get_str_node_name() in cfg and \
-                    Definition.get_str_server_addr() in cfg and \
-                    Definition.get_str_server_port() in cfg and \
-                    Definition.get_str_node_port() in cfg and \
-                    Definition.get_str_idle_time() in cfg:
-                    # Check port number is int or not
-                    if not isinstance(cfg[Definition.get_str_server_port()], int):
-                        Services.t_print("Server port must be integer")
-                    elif not isinstance(cfg[Definition.get_str_node_port()], int):
-                        Services.t_print("Node port must be integer")
-                    elif not isinstance(cfg[Definition.get_str_idle_time()], int):
-                        Services.t_print("Node port must be integer")
-                    else:
-                        Setting.__node_name = cfg[Definition.get_str_node_name()].strip()
-                        Setting.__server_addr = cfg[Definition.get_str_server_addr()].strip()
-                        Setting.__server_port = cfg[Definition.get_str_server_port()]
-                        Setting.__node_port = cfg[Definition.get_str_node_port()]
-                        Setting.__std_idle_time = cfg[Definition.get_str_idle_time()]
-                        print("Load setting successful")
-
+                    # Check for the json structure
+                    if  Definition.get_str_node_name() in cfg and \
+                        Definition.get_str_server_addr() in cfg and \
+                        Definition.get_str_server_port() in cfg and \
+                        Definition.get_str_node_port() in cfg and \
+                        Definition.get_str_idle_time() in cfg:
+                        # Check port number is int or not
+                        if not isinstance(cfg[Definition.get_str_server_port()], int):
+                            Services.t_print("Server port must be integer")
+                        elif not isinstance(cfg[Definition.get_str_node_port()], int):
+                            Services.t_print("Node port must be integer")
+                        elif not isinstance(cfg[Definition.get_str_idle_time()], int):
+                            Services.t_print("Node port must be integer")
+                        else:
+                            Setting.__node_name = cfg[Definition.get_str_node_name()].strip()
+                            Setting.__server_addr = cfg[Definition.get_str_server_addr()].strip()
+                            Setting.__server_port = cfg[Definition.get_str_server_port()]
+                            Setting.__node_port = cfg[Definition.get_str_node_port()]
+                            Setting.__std_idle_time = cfg[Definition.get_str_idle_time()]
+                            print("Load setting successful")
+                except:
+                    Services.t_print("Invalid setting in configuration file.")
 
 class Definition(object):
     @staticmethod

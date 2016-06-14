@@ -7,6 +7,7 @@ setup(name='harmonicIO',
       entry_points={
           'console_scripts': [
               'data_source = data_source.__main__:main',
+              'master = master.__main__:main',
           ]
       }
       )
