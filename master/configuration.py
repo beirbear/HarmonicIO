@@ -38,7 +38,7 @@ class Setting(object):
 
     @staticmethod
     def read_cfg_from_file():
-        from .services import Services
+        from master.services import Services
         if not Services.is_file_exist('master/configuration.json'):
             Services.t_print('master/configuration.json does not exist')
         else:
