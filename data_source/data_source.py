@@ -24,7 +24,7 @@ class LocalFileDataSource(DataSource):
 
     def __init__(self, source_folder='/', file_extension='*'):
         # Check that folder is exist or not, if not throw exception
-        if Services.is_folder_exist(source_folder):
+        if not Services.is_folder_exist(source_folder):
             Services.t_print("{0} does not exist!".format(source_folder))
 
         if source_folder[-1] != '/':
@@ -38,7 +38,7 @@ class LocalFileDataSource(DataSource):
         print("{0} local files register.".format(len(self.__source_files)))
 
         if len(self.__source_files) == 0:
-            Services.t_print("There is no file in the folder with a specified extension.")
+            Services.t_print("No files in {0}".format(source_folder))
 
     def get_data(self, byte_object, file_idx):
         """
@@ -89,7 +89,7 @@ class LocalCachedDataSource(DataSource):
 
     def __init__(self, source_folder='/', file_extension='*'):
         # Check that folder is exist or not, if not throw exception
-        if Services.is_folder_exist(source_folder):
+        if not Services.is_folder_exist(source_folder):
             Services.t_print("{0} does not exist!".format(source_folder))
 
         if source_folder[-1] != '/':
@@ -102,7 +102,7 @@ class LocalCachedDataSource(DataSource):
         self.__index = 0
         print("{0} local files register.".format(len(self.__source_files)))
         if len(self.__source_files) == 0:
-            raise Exception("ERR-SrcFiles: There is no file in the folder with a specified extension.")
+            Services.t_print("No files in {0}".format(source_folder))
 
         # Start reading data into memory
         time1 = time.time()

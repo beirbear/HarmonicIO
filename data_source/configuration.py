@@ -6,6 +6,8 @@ class Setting(object):
     __server_addr = None
     __server_port = None
     __token = "None"
+    is_running = False
+    __std_idle_time = None
 
     @staticmethod
     def get_node_name():
@@ -32,6 +34,10 @@ class Setting(object):
         return Setting.__token
 
     @staticmethod
+    def get_std_idle_time():
+        return Setting.__std_idle_time
+
+    @staticmethod
     def read_cfg_from_file():
         from .services import Services
         if not Services.is_file_exist('data_source/configuration.json'):
@@ -45,17 +51,21 @@ class Setting(object):
                 if  Definition.get_str_node_name() in cfg and \
                     Definition.get_str_server_addr() in cfg and \
                     Definition.get_str_server_port() in cfg and \
-                    Definition.get_str_node_port() in cfg:
+                    Definition.get_str_node_port() in cfg and \
+                    Definition.get_str_idle_time() in cfg:
                     # Check port number is int or not
                     if not isinstance(cfg[Definition.get_str_server_port()], int):
                         Services.t_print("Server port must be integer")
                     elif not isinstance(cfg[Definition.get_str_node_port()], int):
+                        Services.t_print("Node port must be integer")
+                    elif not isinstance(cfg[Definition.get_str_idle_time()], int):
                         Services.t_print("Node port must be integer")
                     else:
                         Setting.__node_name = cfg[Definition.get_str_node_name()].strip()
                         Setting.__server_addr = cfg[Definition.get_str_server_addr()].strip()
                         Setting.__server_port = cfg[Definition.get_str_server_port()]
                         Setting.__node_port = cfg[Definition.get_str_node_port()]
+                        Setting.__std_idle_time = cfg[Definition.get_str_idle_time()]
                         print("Load setting successful")
 
 
@@ -81,6 +91,10 @@ class Definition(object):
         return "node_port"
 
     @staticmethod
+    def get_str_idle_time():
+        return "std_idle_time"
+
+    @staticmethod
     def get_str_token():
         return "token"
 
@@ -99,6 +113,11 @@ class Definition(object):
     @staticmethod
     def get_cpu_load_command():
         return ['uptime', '|', 'awk', '{ print $8 $9 $10}']
+
+    class Server(object):
+        @staticmethod
+        def get_str_check_master():
+            return "http://" + Setting.get_server_addr() + ":" + str(Setting.get_server_port()) + "/status"
 
     class REST(object):
         @staticmethod
