@@ -28,13 +28,13 @@ def run_msg_service():
     server_thread.join()
     server_thread.daemon = True
 
+    print("Enable Messaging System.")
+
     server_thread.start()
 
     """ Have to test for graceful termination. """
     # server.shutdown()
     # server.server_close()
-
-    print("Enable Messaging System.")
 
 if __name__ == '__main__':
     """
@@ -57,8 +57,9 @@ if __name__ == '__main__':
     from concurrent.futures import ThreadPoolExecutor
     pool = ThreadPoolExecutor()
 
+    # Run messaging system service
+    pool.submit(run_msg_service)
+
     # Binding commander to the rest service and enable REST service
     pool.submit(run_rest_service)
 
-    # Run messaging system service
-    pool.submit(run_msg_service)
