@@ -18,11 +18,12 @@ class StreamConnector(object):
         self.__connector = urllib3.PoolManager()
 
     def is_master_alive(self):
-        response = self.__connector.request('GET', Definition.Server.get_str_check_master())
-        if response.status == 200:
-            return True
-
-        return False
+        try:
+            response = self.__connector.request('GET', Definition.Server.get_str_check_master())
+            if response.status == 200:
+                return True
+        except:
+            return False
 
     def __get_stream_end_point(self):
         response = self.__connector.request('GET', Definition.Server.get_str_push_req())
