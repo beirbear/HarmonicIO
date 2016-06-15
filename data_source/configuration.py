@@ -123,7 +123,7 @@ class Definition(object):
 
         @staticmethod
         def get_str_push_req():
-            return "http://" + Setting.get_server_port() + ":" + str(Setting.get_server_port()) + "/streamRequest?token=" + Setting.get_token()
+            return "http://" + Setting.get_server_addr() + ":" + str(Setting.get_server_port()) + "/streamRequest?token=" + Setting.get_token()
 
     class REST(object):
         @staticmethod
