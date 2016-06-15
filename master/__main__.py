@@ -25,7 +25,6 @@ def run_msg_service():
     server_thread = threading.Thread(target=server.serve_forever)
 
     # Exit the server thread when the main thread terminates
-    server_thread.join()
     server_thread.daemon = True
 
     print("Enable Messaging System.")

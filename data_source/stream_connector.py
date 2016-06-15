@@ -63,9 +63,8 @@ class StreamConnector(object):
             return False
 
         with s:
-            t_id = struct.pack(">Q", target[2])
-            f_size = struct.pack(">Q", len(data))
-            s.sendall(t_id + f_size + data)
+            header = bytearray(struct.pack(">Q", target[2]) + struct.pack(">Q", len(data)))
+            s.sendall(header + data)
             s.close()
 
         return True
