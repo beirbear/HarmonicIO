@@ -48,7 +48,7 @@ class MessageStreaming(object):
     def __init__(self):
         pass
 
-    def on_post(self, req, res):
+    def on_get(self, req, res):
         """
         POST: /streamRequest?token=None
         This function is mainly respond with the available channel for streaming
@@ -84,6 +84,9 @@ class RESTService(object):
 
         # Add route for getting status update
         api.add_route('/' + Definition.REST.get_str_status(), RequestStatus())
+
+        # Add route for stream request
+        api.add_route('/' + Definition.REST.get_str_stream_req(), MessageStreaming())
 
         # Establishing a REST server
         self.__server = make_server(Setting.get_node_addr(), Setting.get_node_port(), api)

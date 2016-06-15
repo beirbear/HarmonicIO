@@ -44,6 +44,7 @@ if __name__ == '__main__':
     import time
 
     while not stream_connector.is_master_alive():
+        print("Master node application is not running. Try to connect again in {0} seconds.".format(Setting.get_std_idle_time()))
         time.sleep(Setting.get_std_idle_time())
 
     # Wait for status
