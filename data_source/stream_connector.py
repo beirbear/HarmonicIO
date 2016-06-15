@@ -36,7 +36,7 @@ class StreamConnector(object):
             return (content['c_addr'], int(content['c_port']), int(content['t_id']), )
 
         except:
-            Services.t_print("JSON content error from the master!")
+            Services.t_print("JSON content error from the master!\n" + response.data)
 
 
     def __push_stream_end_point(self, target, data):

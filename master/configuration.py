@@ -129,7 +129,7 @@ class Definition(object):
 
     @staticmethod
     def get_channel_response(addr, port, t_id):
-        return '{ "c_addr": "' + addr + ', "c_port": ' + port + ', "t_id": ' + t_id + '}'
+        return '{ "c_addr": "' + addr + ', "c_port": ' + str(port) + ', "t_id": ' + str(t_id) + '}'
 
     @staticmethod
     def get_master_channel():
