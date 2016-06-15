@@ -126,8 +126,7 @@ class LocalCachedDataSource(DataSource):
             raise Exception("Function requires bytes array.")
 
     def get_data(self, byte_object, file_index):
-        byte_object = self.__data[file_index]
-        return byte_object
+        byte_object += self.__data[file_index]
 
     def get_next_file_id(self):
         if self.__index < len(self.__source_files):

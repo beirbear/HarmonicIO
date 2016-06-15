@@ -122,3 +122,11 @@ class Definition(object):
         @staticmethod
         def get_str_status():
             return "status"
+
+    @staticmethod
+    def get_channel_response(addr, port, t_id):
+        return '{ "c_addr": "' + addr + ', "c_port": ' + port + ', "t_id": ' + t_id + '}'
+
+    @staticmethod
+    def get_master_channel():
+        return Setting.get_node_addr()

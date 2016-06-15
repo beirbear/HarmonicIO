@@ -11,6 +11,30 @@ def run_rest_service():
     rest = RESTService()
     rest.run()
 
+def run_msg_service():
+    """
+    Run msg service to eliminate back pressure
+    """
+    from .configuration import Setting
+    from .server_socket import ThreadedTCPServer, ThreadedTCPRequestHandler
+    import threading
+    server = ThreadedTCPServer((Setting.get_node_addr(), Setting.get_data_port_start()),
+                               ThreadedTCPRequestHandler, bind_and_activate=True)
+
+    # Start a thread with the server -- that thread will then start one
+    server_thread = threading.Thread(target=server.serve_forever)
+
+    # Exit the server thread when the main thread terminates
+    server_thread.join()
+    server_thread.daemon = True
+
+    server_thread.start()
+
+    """ Have to test for graceful termination. """
+    # server.shutdown()
+    # server.server_close()
+
+    print("Enable Messaging System.")
 
 if __name__ == '__main__':
     """

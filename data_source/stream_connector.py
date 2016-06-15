@@ -2,8 +2,12 @@
 This module contain information about the master node and its connector
 """
 from .services import Services
-from .configuration import Definition
+from .configuration import Definition, Setting
 import urllib3
+import json
+import time
+import socket
+import struct
 
 
 class StreamConnector(object):
@@ -13,12 +17,6 @@ class StreamConnector(object):
         self.__master_port = Setting.get_server_port()
         self.__connector = urllib3.PoolManager()
 
-        # Test communication
-        if self.is_master_alive():
-            print("Testing connection to master: successful.")
-        else:
-            Services.e_print("Testing connection to master: fail.")
-
     def is_master_alive(self):
         response = self.__connector.request('GET', Definition.Server.get_str_check_master())
         if response.status == 200:
@@ -27,13 +25,55 @@ class StreamConnector(object):
         return False
 
     def __get_stream_end_point(self):
-        pass
+        response = self.__connector.request('GET', Definition.Server.get_str_push_req())
 
-    def __put_stream_end_point(self):
-        pass
+        if response.status != 200:
+            return False
+        try:
+            content = json.dumps(response.data)
+
+            return (content['c_addr'], int(content['c_port']), int(content['t_id']), )
+
+        except:
+            Services.t_print("JSON content error from the master!")
+
+
+    def __push_stream_end_point(self, target, data):
+        # Create a client socket to connect to server
+
+        s = None
+        for res in socket.getaddrinfo(target[0], target[1], socket.AF_UNSPEC, socket.SOCK_STREAM):
+            af, socktype, proto, canonname, sa = res
+            try:
+                s = socket.socket(af, socktype, proto)
+            except OSError as msg:
+                s = None
+                continue
+            try:
+                s.connect(sa)
+            except OSError as msg:
+                s.close()
+                s = None
+                continue
+            break
+        if s is None:
+            print('could not open socket')
+            Services.e_print("Cannot connect to " + target[0] + ":" + str(target[1]))
+            return False
+
+        with s:
+            t_id = struct.pack(">Q", target[2])
+            f_size = struct.pack(">Q", len(data))
+            s.sendall(t_id + f_size + data)
+            s.close()
+
+        return True
 
     def send_data(self, data):
         # The data must be byte array
         if not isinstance(data, bytearray):
             Services.t_print("Data type must by byte array in send_data method in StreamConnector")
 
+        c_target = self.__get_stream_end_point()
+        while not self.__push_stream_end_point(c_target, data):
+            time.sleep(Setting.get_std_idle_time())

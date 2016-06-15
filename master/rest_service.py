@@ -2,11 +2,12 @@ import falcon
 import subprocess
 from .configuration import Setting
 from .configuration import Definition
+from .pe_channels import PEChannels
+from .messaging_system import MessagingServices
 
 
 class RequestStatus(object):
     def __init__(self):
-        # No commander is needed for binding this task
         pass
 
     def get_machine_status(self):
@@ -42,6 +43,37 @@ class RequestStatus(object):
             res.content_type = "String"
             res.status = falcon.HTTP_401
 
+
+class MessageStreaming(object):
+    def __init__(self):
+        pass
+
+    def on_post(self, req, res):
+        """
+        POST: /streamRequest?token=None
+        This function is mainly respond with the available channel for streaming
+        """
+        if not Definition.get_str_token() in req.params:
+            res.body = "Token is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        # Check for the available channel
+        channel = PEChannels.get_available_channel()
+        if channel:
+            # If channel is available
+            res.body = Definition.get_channel_response(channel[0], channel[1], MessagingServices.get_new_msg_id())
+            res.content_type = "String"
+            res.status = falcon.HTTP_200
+            return
+        else:
+            # Channel is not available, respond with messaging system channel
+            res.body = Definition.get_channel_response(Setting.get_node_addr(), Setting.get_data_port_start(),
+                                                       MessagingServices.get_new_msg_id())
+            res.content_type = "String"
+            res.status = falcon.HTTP_200
+            return
 
 
 class RESTService(object):

@@ -40,19 +40,29 @@ if __name__ == '__main__':
     from .stream_connector import StreamConnector
     stream_connector = StreamConnector()
 
-    # Wait for status
+    # Wait for the master to be active
     import time
+
+    while not stream_connector.is_master_alive():
+        time.sleep(Setting.get_std_idle_time())
+
+    # Wait for status
     while not Setting.is_running:
         time.sleep(Setting.get_std_idle_time())
 
     # Create data rate simulation
     from .data_source import TupleRates
-    tuple_rate = TupleRates('data_source/tuple_rates/tuple_explode.txt')
+    tuple_rate = TupleRates('data_source/tuple_rates/tuple_intermittent.txt')
 
     # Start streaming
+    file_index = 0
     while not data_source.is_done:
         # Mechanism here
         # Send a message to a master
+        data = bytearray()
+        data_source.get_data(data, file_index)
+        stream_connector.send_data(data)
 
         # Sample of delay in data creation time.
         time.sleep(tuple_rate.get_delay())
+        exit()
