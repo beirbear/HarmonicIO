@@ -16,13 +16,14 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         # Receive and interpret the request data
-        header = self.request.recv(16)
+        data = bytearray()
+        data += self.request.recv(16)
 
         # Interpret the header for file size
-        print("t_id", struct.unpack(">Q", header[:8])[0])
-        print("file_size", struct.unpack(">Q", header[8:])[0])
+        file_size = struct.unpack(">Q", data[8:16])[0]
+        c = True
+        while c != b"":
+            c = self.request.recv(2048)
+            data += c
 
-        data = bytearray(header)
-        data += self.request.recv(struct.unpack(">Q", header[8:])[0])
-
-        print("header", len(header), "data", struct.unpack(">Q", header[8:]), "payload", len(data))
+        print("filesize", file_size, "payload", len(data))

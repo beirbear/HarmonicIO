@@ -66,6 +66,7 @@ class StreamConnector(object):
             data[0:8] = struct.pack(">Q", target[2])
             data[8:16] = struct.pack(">Q", len(data))
             s.sendall(data)
+            s.sendall(b'')
             s.close()
 
         return True
