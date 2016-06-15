@@ -47,8 +47,8 @@ if __name__ == '__main__':
         time.sleep(Setting.get_std_idle_time())
 
     # Wait for status
-    while not Setting.is_running:
-        time.sleep(Setting.get_std_idle_time())
+    # while not Setting.is_running:
+    #     time.sleep(Setting.get_std_idle_time())
 
     # Create data rate simulation
     from .data_source import TupleRates
