@@ -19,10 +19,10 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
         header = self.request.recv(16)
 
         # Interpret the header for file size
-        print("t_id", struct.unpack(">Q", header[:8]))
-        print("file_size", struct.unpack(">Q", header[8:]))
+        print("t_id", struct.unpack(">Q", header[:8])[0])
+        print("file_size", struct.unpack(">Q", header[8:])[0])
 
         data = bytearray(header)
-        data += self.request.recv(struct.unpack(">Q", header[8:]))
+        data += self.request.recv(struct.unpack(">Q", header[8:])[0])
 
         print("header", len(header), "data", struct.unpack(">Q", header[8:]), "payload", len(data))

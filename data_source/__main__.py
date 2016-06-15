@@ -60,7 +60,7 @@ if __name__ == '__main__':
     while not data_source.is_done:
         # Mechanism here
         # Send a message to a master
-        data = bytearray()
+        data = bytearray(b'0000000000000000')
         data_source.get_data(data, file_index)
         stream_connector.send_data(data)
 
