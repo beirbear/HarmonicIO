@@ -75,5 +75,9 @@ class StreamConnector(object):
             Services.t_print("Data type must by byte array in send_data method in StreamConnector")
 
         c_target = self.__get_stream_end_point()
+        while not c_target:
+            time.sleep(Setting.get_std_idle_time())
+            c_target = self.__get_stream_end_point()
+
         while not self.__push_stream_end_point(c_target, data):
             time.sleep(Setting.get_std_idle_time())
