@@ -59,3 +59,6 @@ if __name__ == '__main__':
 
     # Binding commander to the rest service and enable REST service
     pool.submit(run_rest_service)
+
+    # Run messaging system service
+    pool.submit(run_msg_service)

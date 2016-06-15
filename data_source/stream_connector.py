@@ -31,12 +31,12 @@ class StreamConnector(object):
         if response.status != 200:
             return False
         try:
-            content = json.dumps(response.data)
+            content = json.loads(response.data.decode('utf-8'))
 
             return (content['c_addr'], int(content['c_port']), int(content['t_id']), )
 
         except:
-            Services.t_print("JSON content error from the master!\n" + response.data)
+            Services.t_print("JSON content error from the master!\n" + response.data.decode('utf-8'))
 
 
     def __push_stream_end_point(self, target, data):

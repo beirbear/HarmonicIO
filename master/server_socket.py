@@ -1,5 +1,5 @@
 import socketserver
-from .configuration import Definition, Setting
+import struct
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     """
@@ -16,7 +16,9 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         # Receive and interpret the request data
-        header = str(self.request.recv(16), 'utf-8')
+        header = self.request.recv(16)
 
         # Interpret the header for file size
+        print("t_id", struct.unpack(">Q", header[:8]))
+        print("file_size", struct.unpack(">Q", header[8:]))
 
