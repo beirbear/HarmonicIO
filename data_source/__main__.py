@@ -70,4 +70,4 @@ if __name__ == '__main__':
 
         # Sample of delay in data creation time.
         time.sleep(tuple_rate.get_delay())
-        exit()
+

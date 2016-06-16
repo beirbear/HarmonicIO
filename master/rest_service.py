@@ -46,8 +46,7 @@ class RequestStatus(object):
 
 class MessageStreaming(object):
     def __init__(self):
-        # Define an error code
-        falcon.HTTP_423 = 423
+        pass
 
     def on_get(self, req, res):
         """
@@ -78,7 +77,7 @@ class MessageStreaming(object):
                 # Message in queue is full
                 res.body = Definition.get_channel_response("0.0.0.0", 0, 0)
                 res.content_type = "String"
-                res.status = falcon.HTTP_423
+                res.status = falcon.HTTP_406
 
 class RESTService(object):
     def __init__(self):

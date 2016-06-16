@@ -28,7 +28,7 @@ class StreamConnector(object):
     def __get_stream_end_point(self):
         response = self.__connector.request('GET', Definition.Server.get_str_push_req())
 
-        if response.status == 423:
+        if response.status == 406:
             # Messages in queue is full. Result in queue lock.
             Services.e_print("Queue in master not is full.")
             return False
