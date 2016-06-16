@@ -28,7 +28,11 @@ class StreamConnector(object):
     def __get_stream_end_point(self):
         response = self.__connector.request('GET', Definition.Server.get_str_push_req())
 
-        if response.status != 200:
+        if response.status == 423:
+            # Messages in queue is full. Result in queue lock.
+            Services.e_print("Queue in master not is full.")
+            return False
+        elif response.status != 200:
             return False
         try:
             content = json.loads(response.data.decode('utf-8'))
@@ -80,6 +84,10 @@ class StreamConnector(object):
         if not isinstance(data, bytearray):
             Services.t_print("Data type must by byte array in send_data method in StreamConnector")
 
+        if len(data) == 0:
+            print("No content in byte array.")
+            return None
+
         c_target = self.__get_stream_end_point()
         while not c_target:
             time.sleep(Setting.get_std_idle_time())
@@ -87,3 +95,5 @@ class StreamConnector(object):
 
         while not self.__push_stream_end_point(c_target, data):
             time.sleep(Setting.get_std_idle_time())
+
+        print("Send data to " + c_target[0] + ":" + str(c_target[1]) + " successful.")

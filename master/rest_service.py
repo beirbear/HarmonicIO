@@ -3,7 +3,7 @@ import subprocess
 from .configuration import Setting
 from .configuration import Definition
 from .pe_channels import PEChannels
-from .messaging_system import MessagingServices
+from .messaging_system import MessagingServices, MessagesQueue
 
 
 class RequestStatus(object):
@@ -46,7 +46,8 @@ class RequestStatus(object):
 
 class MessageStreaming(object):
     def __init__(self):
-        pass
+        # Define an error code
+        falcon.HTTP_423 = 423
 
     def on_get(self, req, res):
         """
@@ -66,15 +67,18 @@ class MessageStreaming(object):
             res.body = Definition.get_channel_response(channel[0], channel[1], MessagingServices.get_new_msg_id())
             res.content_type = "String"
             res.status = falcon.HTTP_200
-            return
         else:
-            # Channel is not available, respond with messaging system channel
-            res.body = Definition.get_channel_response(Setting.get_node_addr(), Setting.get_data_port_start(),
-                                                       MessagingServices.get_new_msg_id())
-            res.content_type = "String"
-            res.status = falcon.HTTP_200
-            return
-
+            if MessagesQueue.is_queue_available():
+                # Channel is not available, respond with messaging system channel
+                res.body = Definition.get_channel_response(Setting.get_node_addr(), Setting.get_data_port_start(),
+                                                           MessagingServices.get_new_msg_id())
+                res.content_type = "String"
+                res.status = falcon.HTTP_200
+            else:
+                # Message in queue is full
+                res.body = Definition.get_channel_response("0.0.0.0", 0, 0)
+                res.content_type = "String"
+                res.status = falcon.HTTP_423
 
 class RESTService(object):
     def __init__(self):

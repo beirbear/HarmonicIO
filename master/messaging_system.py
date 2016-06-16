@@ -1,9 +1,14 @@
 class MessagingConfiguration(object):
     __queue_threshold = 4
+    __max_in_memory_msg = 500
 
     @staticmethod
     def get_queue_threshold():
         return MessagingConfiguration.__queue_threshold
+
+    @staticmethod
+    def get_max_in_memory_msg():
+        return  MessagingConfiguration.__max_in_memory_msg
 
 
 class MessagesQueue(object):
@@ -24,6 +29,13 @@ class MessagesQueue(object):
     @staticmethod
     def pop_queue(index):
         return MessagesQueue.__msg_queue.pop(index)
+
+    @staticmethod
+    def is_queue_available():
+        if MessagesQueue.get_queue_length() < MessagingConfiguration.get_max_in_memory_msg():
+            return True
+
+        return False
 
     @staticmethod
     def __check_for_scale():
