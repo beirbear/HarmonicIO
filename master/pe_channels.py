@@ -1,8 +1,5 @@
 from datetime import datetime
-
-class CStatus:
-    AVAILABLE = 0
-    BUSY = 1
+from general.definition import CStatus
 
 
 class EngineChannel(object):

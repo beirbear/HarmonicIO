@@ -30,7 +30,7 @@ class StreamConnector(object):
 
         if response.status == 406:
             # Messages in queue is full. Result in queue lock.
-            Services.e_print("Queue in master not is full.")
+            Services.e_print("Queue in master is full.")
             return False
         elif response.status != 200:
             return False

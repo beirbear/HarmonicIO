@@ -1,5 +1,6 @@
 class Setting(object):
     import socket
+    import multiprocessing
     __node_name = None
     __node_addr = socket.gethostbyname(socket.gethostname())
     __node_port = None
@@ -7,6 +8,8 @@ class Setting(object):
     __node_data_port_stop = None
     __std_idle_time = None
     __token = "None"
+    __max_workers = multiprocessing.cpu_count()
+    __ext_process = None
 
     @staticmethod
     def get_node_name():
@@ -37,12 +40,20 @@ class Setting(object):
         return Setting.__token
 
     @staticmethod
+    def get_max_worker():
+        return Setting.__max_workers
+
+    @staticmethod
+    def get_external_process():
+        return Setting.__ext_process
+
+    @staticmethod
     def read_cfg_from_file():
         from .services import Services
-        if not Services.is_file_exist('master/configuration.json'):
-            Services.t_print('master/configuration.json does not exist')
+        if not Services.is_file_exist('worker/configuration.json'):
+            Services.t_print('worker/configuration.json does not exist')
         else:
-            with open('master/configuration.json', 'rt') as t:
+            with open('worker/configuration.json', 'rt') as t:
                 import json
                 cfg = json.loads(t.read())
 
@@ -51,7 +62,8 @@ class Setting(object):
                     if  Definition.get_str_node_name() in cfg and \
                         Definition.get_str_node_port() in cfg and \
                         Definition.get_str_data_port_range() in cfg and \
-                        Definition.get_str_idle_time() in cfg:
+                        Definition.get_str_idle_time() in cfg and \
+                        Definition.get_str_ext_process() in cfg:
                         # Check port number is int or not
                         if not isinstance(cfg[Definition.get_str_node_port()], int):
                             Services.t_print("Node port must be integer")
@@ -73,6 +85,7 @@ class Setting(object):
                             Setting.__node_data_port_start = cfg[Definition.get_str_data_port_range()][0]
                             Setting.__node_data_port_stop = cfg[Definition.get_str_data_port_range()][1]
                             Setting.__std_idle_time = cfg[Definition.get_str_idle_time()]
+                            Setting.__ext_process = cfg[Definition.get_str_ext_process()].strip()
                             print("Load setting successful")
                 except:
                     Services.t_print("Invalid data in configuration file.")
@@ -100,6 +113,10 @@ class Definition(object):
         return "std_idle_time"
 
     @staticmethod
+    def get_str_ext_process():
+        return "ext_process"
+
+    @staticmethod
     def get_str_token():
         return "token"
 
@@ -123,15 +140,3 @@ class Definition(object):
         @staticmethod
         def get_str_status():
             return "status"
-
-        @staticmethod
-        def get_str_stream_req():
-            return "streamRequest"
-
-    @staticmethod
-    def get_channel_response(addr, port, t_id):
-        return '{ "c_addr": "' + addr + '", "c_port": ' + str(port) + ', "t_id": ' + str(t_id) + '}'
-
-    @staticmethod
-    def get_master_channel():
-        return Setting.get_node_addr()
