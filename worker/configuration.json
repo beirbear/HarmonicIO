@@ -3,5 +3,5 @@
   "node_port": 8080,
   "node_data_port_range": [8090, 8099],
   "std_idle_time": 5,
-  "ext_process": [ 'ls' ]
+  "ext_process": [ "ls" ]
 }

@@ -85,7 +85,7 @@ class Setting(object):
                             Setting.__node_data_port_start = cfg[Definition.get_str_data_port_range()][0]
                             Setting.__node_data_port_stop = cfg[Definition.get_str_data_port_range()][1]
                             Setting.__std_idle_time = cfg[Definition.get_str_idle_time()]
-                            Setting.__ext_process = cfg[Definition.get_str_ext_process()].strip()
+                            Setting.__ext_process = cfg[Definition.get_str_ext_process()]
                             print("Load setting successful")
                 except:
                     Services.t_print("Invalid data in configuration file.")

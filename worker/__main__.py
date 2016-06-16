@@ -2,7 +2,7 @@
 Worker entry point.
 """
 
-from .commander import Commander
+
 from .configuration import Setting
 
 
