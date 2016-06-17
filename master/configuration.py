@@ -128,6 +128,19 @@ class Definition(object):
         def get_str_stream_req():
             return "streamRequest"
 
+        class Batch(object):
+            @staticmethod
+            def get_str_batch_addr():
+                return "batch_addr"
+
+            @staticmethod
+            def get_str_batch_port():
+                return "batch_port"
+
+            @staticmethod
+            def get_str_batch_status():
+                return "batch_status"
+
     @staticmethod
     def get_channel_response(addr, port, t_id):
         return '{ "c_addr": "' + addr + '", "c_port": ' + str(port) + ', "t_id": ' + str(t_id) + '}'

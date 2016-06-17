@@ -50,8 +50,8 @@ class MessageStreaming(object):
 
     def on_get(self, req, res):
         """
-        POST: /streamRequest?token=None
-        This function is mainly respond with the available channel for streaming
+        GET: /streamRequest?token=None
+        This function is mainly respond with the available channel for streaming from data source.
         """
         if not Definition.get_str_token() in req.params:
             res.body = "Token is required."
@@ -78,6 +78,46 @@ class MessageStreaming(object):
                 res.body = Definition.get_channel_response("0.0.0.0", 0, 0)
                 res.content_type = "String"
                 res.status = falcon.HTTP_406
+
+    def on_post(self, req, res):
+        """
+        POST: /streamRequest?token=None
+        This function respond with getting a stream from data source or from messaging system.
+        """
+        if not Definition.get_str_token() in req.params:
+            res.body = "Token is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        # Check that the PE is existing or not, if not insert and respond
+        if Definition.REST.Batch.get_str_batch_addr() in req.params and \
+           Definition.REST.Batch.get_str_batch_port() in req.params and \
+           Definition.REST.Batch.get_str_batch_status() in req.params:
+
+            # Check for data type
+            if req.params[Definition.REST.Batch.get_str_batch_port()].isdigit() and \
+               req.params[Definition.REST.Batch.get_str_batch_status()].isdigit():
+
+                batch_port = int(req.params[Definition.REST.Batch.get_str_batch_port()])
+                batch_status = int(req.params[Definition.REST.Batch.get_str_batch_status()])
+
+                # Register channel
+                PEChannels.register_channel(req.params[Definition.REST.Batch.get_str_batch_addr()],
+                                            batch_port, batch_status)
+                res.body = "OK"
+                res.content_type = "String"
+                res.status = falcon.HTTP_200
+
+            else:
+                res.body = "Invalid data type!"
+                res.content_type = "String"
+                res.status = falcon.HTTP_406
+        else:
+            res.body = "Invalid parameters!"
+            res.content_type = "String"
+            res.status = falcon.HTTP_406
+
 
 class RESTService(object):
     def __init__(self):
