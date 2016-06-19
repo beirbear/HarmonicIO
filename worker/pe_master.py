@@ -62,17 +62,19 @@ class PEsMaster(object):
                 Services.e_print("Important: no more port available.")
                 break
 
-            batch_name = Setting.get_node_addr() + "_" + str(port)
-
-            self.__pe_pool.map(run_microbatch, (batch_name, port, Setting.get_master_addr(), Setting.get_master_port(), Setting.get_std_idle_time()))
+            self.__pe_pool.map(run_microbatch, (port,))
 
 
-def run_microbatch(info):
+def run_microbatch(port):
     # External process call
     def call_ext_process():
 
-        cmd = Setting.get_external_process() + list(info)
-        print(str(cmd))
+        batch_name = Setting.get_node_addr() + "_" + str(port)
+
+        cmd = Setting.get_external_process() + [batch_name, port, Setting.get_master_addr(), Setting.get_master_port(), Setting.get_std_idle_time()]
+
+        print(cmd)
+
         if subprocess.call(cmd) != BatchErrorCode.SUCCESS:
             return False
 
