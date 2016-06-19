@@ -56,6 +56,22 @@ class PEsMaster(object):
 
     def run_pe(self):
 
+        def run_microbatch(info):
+
+            # External process call
+            def call_ext_process():
+
+                cmd = Setting.get_external_process() + list(info)
+                print(str(cmd))
+                if subprocess.call(cmd) != BatchErrorCode.SUCCESS:
+                    return False
+
+                return True
+
+            while not call_ext_process():
+                # If the process error, call it again without delay
+                pass
+
         for i in range(Setting.get_max_worker()):
             port = self.__get_available_port()
 
@@ -67,19 +83,3 @@ class PEsMaster(object):
 
             self.__pe_pool.map(run_microbatch, (batch_name, port, Setting.get_master_addr(), Setting.get_master_port(), Setting.get_std_idle_time()))
 
-
-def run_microbatch(info):
-
-    # External process call
-    def call_ext_process():
-
-        cmd = Setting.get_external_process() + list(info)
-
-        if subprocess.call(cmd) != BatchErrorCode.SUCCESS:
-            return False
-
-        return True
-
-    while not call_ext_process():
-        # If the process error, call it again without delay
-        pass
