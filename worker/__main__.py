@@ -39,3 +39,7 @@ if __name__ == "__main__":
     # Binding commander to the rest service and enable REST service
     pool.submit(run_rest_service)
 
+    from .pe_master import PEsMaster
+    pe = PEsMaster()
+    pe.run_pe()
+
