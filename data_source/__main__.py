@@ -56,7 +56,6 @@ if __name__ == '__main__':
     tuple_rate = TupleRates('data_source/tuple_rates/tuple_intermittent.txt')
 
     # Start streaming
-    file_index = 0
     while not data_source.is_done:
         # Mechanism here
         # Send a message to a master
@@ -65,10 +64,9 @@ if __name__ == '__main__':
         data = bytearray(b'0000000000000000')
         """
         data = bytearray()
-        data_source.get_data(data, file_index)
+        data_source.get_data(data, data_source.get_next_file_id())
         stream_connector.send_data(data)
 
         # Sample of delay in data creation time.
         time.sleep(tuple_rate.get_delay())
-        file_index += 1
 
