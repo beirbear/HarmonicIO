@@ -84,7 +84,7 @@ class Setting(object):
                         elif not (isinstance(cfg[Definition.get_str_data_port_range()][0], int) and \
                                   isinstance(cfg[Definition.get_str_data_port_range()][1], int)):
                             Services.t_print("Port range must be integer")
-                        elif not (isinstance(cfg[Definition.get_str_master_port()], int)):
+                        elif not isinstance(cfg[Definition.get_str_master_port()], int):
                             Services.t_print("Master port must be integer")
                         elif len(cfg[Definition.get_str_data_port_range()]) != 2:
                             Services.t_print("Port range must compost of two elements: start, stop")
@@ -138,7 +138,7 @@ class Definition(object):
 
     @staticmethod
     def get_str_master_port():
-        return "data_port"
+        return "master_port"
 
     @staticmethod
     def get_str_token():
