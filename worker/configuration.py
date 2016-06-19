@@ -10,6 +10,8 @@ class Setting(object):
     __token = "None"
     __max_workers = multiprocessing.cpu_count()
     __ext_process = None
+    __master_addr = None
+    __master_port = None
 
     @staticmethod
     def get_node_name():
@@ -34,6 +36,14 @@ class Setting(object):
     @staticmethod
     def get_std_idle_time():
         return Setting.__std_idle_time
+
+    @staticmethod
+    def get_master_addr():
+        return Setting.__master_addr
+
+    @staticmethod
+    def get_master_port():
+        return Setting.__master_port
 
     @staticmethod
     def get_token():
@@ -63,7 +73,9 @@ class Setting(object):
                         Definition.get_str_node_port() in cfg and \
                         Definition.get_str_data_port_range() in cfg and \
                         Definition.get_str_idle_time() in cfg and \
-                        Definition.get_str_ext_process() in cfg:
+                        Definition.get_str_ext_process() in cfg and \
+                        Definition.get_str_master_addr() in cfg and \
+                        Definition.get_str_master_port() in cfg:
                         # Check port number is int or not
                         if not isinstance(cfg[Definition.get_str_node_port()], int):
                             Services.t_print("Node port must be integer")
@@ -72,6 +84,8 @@ class Setting(object):
                         elif not (isinstance(cfg[Definition.get_str_data_port_range()][0], int) and \
                                   isinstance(cfg[Definition.get_str_data_port_range()][1], int)):
                             Services.t_print("Port range must be integer")
+                        elif not (isinstance(cfg[Definition.get_str_master_port()], int)):
+                            Services.t_print("Master port must be integer")
                         elif len(cfg[Definition.get_str_data_port_range()]) != 2:
                             Services.t_print("Port range must compost of two elements: start, stop")
                         elif not isinstance(cfg[Definition.get_str_idle_time()], int):
@@ -86,6 +100,8 @@ class Setting(object):
                             Setting.__node_data_port_stop = cfg[Definition.get_str_data_port_range()][1]
                             Setting.__std_idle_time = cfg[Definition.get_str_idle_time()]
                             Setting.__ext_process = cfg[Definition.get_str_ext_process()]
+                            Setting.__master_addr = cfg[Definition.get_str_master_addr()].strip()
+                            Setting.__master_port = cfg[Definition.get_str_master_port()]
                             print("Load setting successful")
                 except:
                     Services.t_print("Invalid data in configuration file.")
@@ -115,6 +131,14 @@ class Definition(object):
     @staticmethod
     def get_str_ext_process():
         return "ext_process"
+
+    @staticmethod
+    def get_str_master_addr():
+        return "master_addr"
+
+    @staticmethod
+    def get_str_master_port():
+        return "data_port"
 
     @staticmethod
     def get_str_token():

@@ -34,7 +34,7 @@ class PEChannels(object):
             PEChannels.__channels[identity].status = status
             PEChannels.__channels[identity].last_seen = datetime.now()
 
-        if PEChannels[identity] == CStatus.AVAILABLE:
+        if PEChannels.__channels[identity].status == CStatus.AVAILABLE:
             PEChannels.__available_channels.append(identity)
 
     @staticmethod

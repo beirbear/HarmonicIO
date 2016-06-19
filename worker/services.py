@@ -1,7 +1,6 @@
 import os.path
 import sys
 
-
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -30,4 +29,3 @@ class Services(object):
     @staticmethod
     def e_print(*args, **kwargs):
         print(*args, file=sys.stderr, **kwargs)
-
