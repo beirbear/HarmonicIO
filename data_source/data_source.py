@@ -184,3 +184,7 @@ class TupleRates(object):
             if self.__cur_rate == 0:
                 self.__next_frame()
             return 0
+
+    @property
+    def delay_time(self):
+        return 1

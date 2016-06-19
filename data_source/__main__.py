@@ -68,5 +68,5 @@ if __name__ == '__main__':
         stream_connector.send_data(data)
 
         # Sample of delay in data creation time.
-        time.sleep(tuple_rate.get_delay())
-
+        while tuple_rate.get_delay() > 0:
+            time.sleep(tuple_rate.delay_time)
