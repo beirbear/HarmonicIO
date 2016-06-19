@@ -32,6 +32,11 @@ if __name__ == "__main__":
                                                                  Setting.get_data_port_start()))
     print("Number of workers: {0}".format(Setting.get_max_worker()))
 
+    # Create PE channels
+    from .pe_master import PEsMaster
+    pe = PEsMaster()
+    pe.run_pe()
+
     # Create thread for handling REST Service
     from concurrent.futures import ThreadPoolExecutor
     pool = ThreadPoolExecutor()
@@ -39,7 +44,4 @@ if __name__ == "__main__":
     # Binding commander to the rest service and enable REST service
     pool.submit(run_rest_service)
 
-    from .pe_master import PEsMaster
-    pe = PEsMaster()
-    pe.run_pe()
 
