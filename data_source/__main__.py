@@ -62,8 +62,6 @@ if __name__ == '__main__':
 
         # Enable header for identifying object id
         data = bytearray(b'00000000')
-
-        data = bytearray()
         data_source.get_data(data, data_source.get_next_file_id())
         stream_connector.send_data(data)
 

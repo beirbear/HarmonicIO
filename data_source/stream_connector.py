@@ -1,8 +1,9 @@
 """
 This module contain information about the master node and its connector
 """
-from .services import Services
-from .configuration import Definition, Setting
+from general.services import Services
+from general.definition import Definition
+from .configuration import Setting
 import urllib3
 import json
 import time
@@ -19,14 +20,18 @@ class StreamConnector(object):
 
     def is_master_alive(self):
         try:
-            response = self.__connector.request('GET', Definition.Server.get_str_check_master())
+            response = self.__connector.request('GET', Definition.Server.get_str_check_master(Setting.get_server_addr(),
+                                                                                              Setting.get_server_port(),
+                                                                                              Setting.get_token()))
             if response.status == 200:
                 return True
         except:
             return False
 
     def __get_stream_end_point(self):
-        response = self.__connector.request('GET', Definition.Server.get_str_push_req())
+        response = self.__connector.request('GET', Definition.Server.get_str_push_req(Setting.get_server_addr(),
+                                                                                      Setting.get_server_port(),
+                                                                                      Setting.get_token()))
 
         if response.status == 406:
             # Messages in queue is full. Result in queue lock.
