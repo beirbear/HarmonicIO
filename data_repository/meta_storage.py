@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from .configuration import Setting
-from .configuration import Definitions
+from general.definition import Definition as Definitions
 import io
 import tarfile
 import datetime
