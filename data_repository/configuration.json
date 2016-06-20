@@ -1,0 +1,12 @@
+{
+  "node_name": "Data Repository",
+  "node_port": 8080,
+  "mongodb_setting": {
+    "connection_string": "mongodb://localhost:27017/",
+    "db_name": "parameter_sweep",
+    "db_features": "features",
+    "db_tree": "tree",
+    "db_meta": "meta",
+    "lc_storage": "/home/ubuntu/storage/"
+  }
+}

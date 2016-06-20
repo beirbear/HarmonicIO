@@ -122,3 +122,33 @@ class Definition(object):
     @staticmethod
     def get_channel_response(addr, port, t_id):
         return '{ "c_addr": "' + addr + '", "c_port": ' + str(port) + ', "t_id": ' + str(t_id) + '}'
+
+    @staticmethod
+    def get_str_mongodb_setting():
+        return "mongodb_setting"
+
+    class MongoDB(object):
+
+        @staticmethod
+        def get_str_connection_string():
+            return "connection_string"
+
+        @staticmethod
+        def get_str_db_name():
+            return "db_name"
+
+        @staticmethod
+        def get_str_db_feature():
+            return "db_features"
+
+        @staticmethod
+        def get_str_db_tree():
+            return "db_tree"
+
+        @staticmethod
+        def get_str_db_meta():
+            return "db_meta"
+
+        @staticmethod
+        def get_str_lc_storage():
+            return "lc_storage"
