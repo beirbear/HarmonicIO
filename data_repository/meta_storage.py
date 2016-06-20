@@ -87,6 +87,9 @@ class MetaStorage(object):
         """
         Purpose: drop feature table
         """
+        self.__db[Setting.get_str_table_feature()].drop()
+        self.__db[Setting.get_str_table_linkage_matrix()].drop()
+        self.__db[Setting.get_str_table_meta_name()].drop()
         self.__db[Setting.get_str_database_name()].drop()
 
     def set_linkage_matrix(self, content):
