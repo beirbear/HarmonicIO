@@ -23,7 +23,9 @@ class Setting(object):
             # if addr is not valid
             Setting.__node_addr = Services.get_host_name_i()
             if Services.is_valid_ipv4(Setting.__node_addr) or Services.is_valid_ipv6(Setting.__node_addr):
-                Services.t_print("Cannot get node ip address!")
+                return None
+
+            Services.t_print("Cannot get node ip address!")
 
     @staticmethod
     def get_node_name():
