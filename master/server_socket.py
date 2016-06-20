@@ -1,5 +1,4 @@
 import socketserver
-import struct
 from .messaging_system import MessagesQueue
 
 
