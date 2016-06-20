@@ -1,7 +1,7 @@
 {
   "node_name": "Worker 1",
   "node_port": 8080,
-  "master_addr": "10.132.0.3",
+  "master_addr": "192.168.1.23",
   "master_port": 8080,
   "node_data_port_range": [8090, 8099],
   "std_idle_time": 5,

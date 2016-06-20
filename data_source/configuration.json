@@ -1,7 +1,7 @@
 {
   "node_name": "Simulator 1",
   "node_port": 8080,
-  "server_addr": "10.132.0.3",
+  "server_addr": "192.168.1.23",
   "server_port": 8080,
   "std_idle_time": 5
 }
