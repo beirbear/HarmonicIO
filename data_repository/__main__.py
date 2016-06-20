@@ -22,6 +22,7 @@ def main():
     from .meta_storage import MetaStorage
     meta_storage = MetaStorage()
     meta_storage.drop_database()
+    meta_storage.close_connection()
     print("Clear data in the database complete.")
 
     # Reset data in the local storage

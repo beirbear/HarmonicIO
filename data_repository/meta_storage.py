@@ -51,6 +51,9 @@ class MetaStorage(object):
         """
         return self.__db[Setting.get_str_table_feature()].count()
 
+    def close_connection(self):
+        self.__client.close()
+
     def get_all_features(self):
         """
         Purpose: dump all features file into tarball for processing in the knowledge discovery node.
