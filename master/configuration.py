@@ -1,12 +1,29 @@
 class Setting(object):
-    import socket
     __node_name = None
-    __node_addr = socket.gethostbyname(socket.gethostname())
+    __node_addr = None
     __node_port = None
     __node_data_port_start = None
     __node_data_port_stop = None
     __std_idle_time = None
     __token = "None"
+
+    @staticmethod
+    def set_node_addr(addr=None):
+        if not addr:
+            Setting.__node_addr = addr
+        else:
+            import socket
+            from .services import Services
+            Setting.__node_addr = socket.gethostbyname(socket.gethostname())
+
+            # if addr is valid
+            if Services.is_valid_ipv4(Setting.__node_addr) or Services.is_valid_ipv6(Setting.__node_addr):
+                return None
+
+            # if addr is not valid
+            Setting.__node_addr = Services.get_host_name_i()
+            if Services.is_valid_ipv4(Setting.__node_addr) or Services.is_valid_ipv6(Setting.__node_addr):
+                Services.t_print("Cannot get node ip address!")
 
     @staticmethod
     def get_node_name():
@@ -68,6 +85,7 @@ class Setting(object):
                              cfg[Definition.get_str_data_port_range()][1]:
                             Services.t_print("Start port range must greater than stop port range")
                         else:
+                            Setting.set_node_addr()
                             Setting.__node_name = cfg[Definition.get_str_node_name()].strip()
                             Setting.__node_port = cfg[Definition.get_str_node_port()]
                             Setting.__node_data_port_start = cfg[Definition.get_str_data_port_range()][0]

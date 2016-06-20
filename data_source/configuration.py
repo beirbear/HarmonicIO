@@ -1,6 +1,5 @@
 class Setting(object):
-    import socket
-    __node_addr = socket.gethostbyname(socket.gethostname())
+    __node_addr = None
     __node_port = None
     __node_name = None
     __server_addr = None
@@ -8,6 +7,24 @@ class Setting(object):
     __token = "None"
     is_running = False
     __std_idle_time = None
+
+    @staticmethod
+    def set_node_addr(addr=None):
+        if not addr:
+            Setting.__node_addr = addr
+        else:
+            import socket
+            from .services import Services
+            Setting.__node_addr = socket.gethostbyname(socket.gethostname())
+
+            # if addr is valid
+            if Services.is_valid_ipv4(Setting.__node_addr) or Services.is_valid_ipv6(Setting.__node_addr):
+                return None
+
+            # if addr is not valid
+            Setting.__node_addr = Services.get_host_name_i()
+            if Services.is_valid_ipv4(Setting.__node_addr) or Services.is_valid_ipv6(Setting.__node_addr):
+                Services.t_print("Cannot get node ip address!")
 
     @staticmethod
     def get_node_name():
@@ -62,6 +79,8 @@ class Setting(object):
                         elif not isinstance(cfg[Definition.get_str_idle_time()], int):
                             Services.t_print("Node port must be integer")
                         else:
+
+                            Setting.set_node_addr()
                             Setting.__node_name = cfg[Definition.get_str_node_name()].strip()
                             Setting.__server_addr = cfg[Definition.get_str_server_addr()].strip()
                             Setting.__server_port = cfg[Definition.get_str_server_port()]
