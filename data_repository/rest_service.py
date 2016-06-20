@@ -66,6 +66,5 @@ class RESTService(object):
         """
         Call this function to run the data repository service.
         """
-        print("Data Repository Service Enable")
-        print("Ready.....\n\n")
+        print("REST Ready.....\n\n")
         self.__server.serve_forever()
