@@ -9,7 +9,7 @@ class Setting(object):
 
     @staticmethod
     def set_node_addr(addr=None):
-        if not addr:
+        if addr:
             Setting.__node_addr = addr
         else:
             import socket
