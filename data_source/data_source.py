@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from .services import Services
+from general.services import Services
 
 
 class DataSource(metaclass=ABCMeta):
