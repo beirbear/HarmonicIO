@@ -3,7 +3,7 @@ from .configuration import Setting
 from general.definition import CStatus
 import socket
 import subprocess
-from .services import Services
+from general.services import Services
 from general.definition import BatchErrorCode
 
 

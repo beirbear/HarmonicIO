@@ -1,7 +1,7 @@
 import falcon
 import subprocess
 from .configuration import Setting
-from .configuration import Definition
+from general.definition import Definition
 
 
 class RequestStatus(object):

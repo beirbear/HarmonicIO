@@ -19,7 +19,7 @@ class Setting(object):
             Setting.__node_addr = addr
         else:
             import socket
-            from .services import Services
+            from general.services import Services
             Setting.__node_addr = socket.gethostname()
 
             # if addr is valid
@@ -87,7 +87,7 @@ class Setting(object):
 
     @staticmethod
     def read_cfg_from_file():
-        from .services import Services
+        from general.services import Services
         if not Services.is_file_exist('worker/configuration.json'):
             Services.t_print('worker/configuration.json does not exist')
         else:
@@ -96,6 +96,7 @@ class Setting(object):
                 cfg = json.loads(t.read())
 
                 try:
+                    from general.definition import Definition
                     # Check for the json structure
                     if  Definition.get_str_node_name() in cfg and \
                         Definition.get_str_node_port() in cfg and \
@@ -143,7 +144,7 @@ class Setting(object):
                 except:
                     Services.t_print("Invalid data in configuration file.")
 
-
+"""
 class Definition(object):
     @staticmethod
     def get_str_node_name():
@@ -209,3 +210,4 @@ class Definition(object):
         @staticmethod
         def get_str_status():
             return "status"
+"""

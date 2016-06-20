@@ -19,6 +19,10 @@ class Definition(object):
         return "node_addr"
 
     @staticmethod
+    def get_str_node_port():
+        return "node_port"
+
+    @staticmethod
     def get_str_server_addr():
         return "server_addr"
 
@@ -27,8 +31,24 @@ class Definition(object):
         return "server_port"
 
     @staticmethod
-    def get_str_node_port():
-        return "node_port"
+    def get_str_ext_process():
+        return "ext_process"
+
+    @staticmethod
+    def get_str_master_addr():
+        return "master_addr"
+
+    @staticmethod
+    def get_str_master_port():
+        return "master_port"
+
+    @staticmethod
+    def get_str_repo_addr():
+        return "repo_addr"
+
+    @staticmethod
+    def get_str_repo_port():
+        return "repo_port"
 
     @staticmethod
     def get_str_idle_time():
