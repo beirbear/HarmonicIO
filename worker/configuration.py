@@ -10,6 +10,8 @@ class Setting(object):
     __ext_process = None
     __master_addr = None
     __master_port = None
+    __repo_addr = None
+    __repo_port = None
 
     @staticmethod
     def set_node_addr(addr=None):
@@ -93,7 +95,9 @@ class Setting(object):
                         Definition.get_str_idle_time() in cfg and \
                         Definition.get_str_ext_process() in cfg and \
                         Definition.get_str_master_addr() in cfg and \
-                        Definition.get_str_master_port() in cfg:
+                        Definition.get_str_master_port() in cfg and \
+                        Definition.get_str_repo_addr() in cfg and \
+                        Definition.get_str_repo_port() in cfg:
                         # Check port number is int or not
                         if not isinstance(cfg[Definition.get_str_node_port()], int):
                             Services.t_print("Node port must be integer")
@@ -111,6 +115,8 @@ class Setting(object):
                         elif cfg[Definition.get_str_data_port_range()][0] > \
                              cfg[Definition.get_str_data_port_range()][1]:
                             Services.t_print("Start port range must greater than stop port range")
+                        elif not isinstance(cfg[Definition.get_str_repo_port()], int):
+                            Services.t_print("Repository port must be integer")
                         else:
                             Setting.set_node_addr()
                             import multiprocessing
@@ -123,6 +129,8 @@ class Setting(object):
                             Setting.__ext_process = cfg[Definition.get_str_ext_process()]
                             Setting.__master_addr = cfg[Definition.get_str_master_addr()].strip()
                             Setting.__master_port = cfg[Definition.get_str_master_port()]
+                            Setting.__repo_addr = cfg[Definition.get_str_repo_addr()].strip()
+                            Setting.__repo_port = cfg[Definition.get_str_repo_port()]
                             print("Load setting successful")
                 except:
                     Services.t_print("Invalid data in configuration file.")
@@ -160,6 +168,14 @@ class Definition(object):
     @staticmethod
     def get_str_master_port():
         return "master_port"
+
+    @staticmethod
+    def get_str_repo_addr():
+        return "repo_addr"
+
+    @staticmethod
+    def get_str_repo_port():
+        return "repo_port"
 
     @staticmethod
     def get_str_token():
