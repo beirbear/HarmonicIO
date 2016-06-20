@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from .configuration import Setting
-from general.definition import Definition as Definitions
+from general.dr_definition import Definition
 import io
 import tarfile
 import datetime
@@ -37,7 +37,7 @@ class MetaStorage(object):
         :return: Success or Fail
         """
         res = self.__db[Setting.get_str_table_feature()].insert_one(
-              Definitions.MongoDB.Features.get_dict_record(_id, prev_id, f_path, r_path, created_by, is_labeled))
+              Definition.MongoDB.Features.get_dict_record(_id, prev_id, f_path, r_path, created_by, is_labeled))
 
         if res.inserted_id:
             return True
@@ -67,7 +67,7 @@ class MetaStorage(object):
 
         # Tarball every file at the moment
         for item in cursor:
-            out.add(Setting.get_local_storage() + item[Definitions.MongoDB.Features.get_string_feature_path()])
+            out.add(Setting.get_local_storage() + item[Definition.MongoDB.Features.get_string_feature_path()])
         out.close()
 
         return tar_byte
@@ -102,10 +102,10 @@ class MetaStorage(object):
         # Insert records into linkage matrix
         for l_node, r_node, distance, clust_num in content:
             res = self.__db[Setting.get_str_table_linkage_matrix()].insert_one({
-                    Definitions.MongoDB.LinkageMatrix.get_string_left_child(): l_node,
-                    Definitions.MongoDB.LinkageMatrix.get_string_right_child(): r_node,
-                    Definitions.MongoDB.LinkageMatrix.get_string_proximity(): distance,
-                    Definitions.MongoDB.LinkageMatrix.get_string_num_of_nodes(): clust_num
+                    Definition.MongoDB.LinkageMatrix.get_string_left_child(): l_node,
+                    Definition.MongoDB.LinkageMatrix.get_string_right_child(): r_node,
+                    Definition.MongoDB.LinkageMatrix.get_string_proximity(): distance,
+                    Definition.MongoDB.LinkageMatrix.get_string_num_of_nodes(): clust_num
                     })
 
         if res.inserted_id:
@@ -120,12 +120,12 @@ class MetaStorage(object):
         :return: Success or Fail
         """
         self.__db[Setting.get_str_table_meta_name()].remove({
-            Definitions.MongoDB.Meta.get_string_name(): Definitions.DataLabels.get_string_command_tree()})
+            Definition.MongoDB.Meta.get_string_name(): Definition.DataLabels.get_string_command_tree()})
 
         res = self.__db[Setting.get_str_table_meta_name()].insert_one({
-            Definitions.MongoDB.Meta.get_string_name(): Definitions.DataLabels.get_string_command_tree(),
-            Definitions.MongoDB.Meta.get_string_value(): content,
-            Definitions.MongoDB.Meta.get_string_last_update(): datetime.datetime.now()})
+            Definition.MongoDB.Meta.get_string_name(): Definition.DataLabels.get_string_command_tree(),
+            Definition.MongoDB.Meta.get_string_value(): content,
+            Definition.MongoDB.Meta.get_string_last_update(): datetime.datetime.now()})
 
         if res.inserted_id:
             return True
@@ -139,12 +139,12 @@ class MetaStorage(object):
         :return: Success or Fail
         """
         self.__db[Setting.get_str_table_meta_name()].remove({
-            Definitions.MongoDB.Meta.get_string_name(): Definitions.DataLabels.get_string_command_row_idx()})
+            Definition.MongoDB.Meta.get_string_name(): Definition.DataLabels.get_string_command_row_idx()})
 
         res = self.__db[Setting.get_str_table_meta_name()].insert_one({
-            Definitions.MongoDB.Meta.get_string_name(): Definitions.DataLabels.get_string_command_row_idx(),
-            Definitions.MongoDB.Meta.get_string_value(): content,
-            Definitions.MongoDB.Meta.get_string_last_update(): datetime.datetime.now()})
+            Definition.MongoDB.Meta.get_string_name(): Definition.DataLabels.get_string_command_row_idx(),
+            Definition.MongoDB.Meta.get_string_value(): content,
+            Definition.MongoDB.Meta.get_string_last_update(): datetime.datetime.now()})
 
         if res.inserted_id:
             return True
@@ -163,10 +163,10 @@ class MetaStorage(object):
 
         res = []
         for item in cursor:
-            res.append([int(item[Definitions.MongoDB.LinkageMatrix.get_string_left_child()]),
-                        int(item[Definitions.MongoDB.LinkageMatrix.get_string_right_child()]),
-                        float(item[Definitions.MongoDB.LinkageMatrix.get_string_proximity()]),
-                        int(item[Definitions.MongoDB.LinkageMatrix.get_string_num_of_nodes()])])
+            res.append([int(item[Definition.MongoDB.LinkageMatrix.get_string_left_child()]),
+                        int(item[Definition.MongoDB.LinkageMatrix.get_string_right_child()]),
+                        float(item[Definition.MongoDB.LinkageMatrix.get_string_proximity()]),
+                        int(item[Definition.MongoDB.LinkageMatrix.get_string_num_of_nodes()])])
 
         return res
 
@@ -180,11 +180,11 @@ class MetaStorage(object):
             return "Table has not been created yet."
 
         cursor = self.__db[Setting.get_str_table_meta_name()].find({
-            Definitions.MongoDB.Meta.get_string_name(): value})
+            Definition.MongoDB.Meta.get_string_name(): value})
 
         res = []
         for item in cursor:
-            res.append(eval(item[Definitions.MongoDB.Meta.get_string_value()]))
+            res.append(eval(item[Definition.MongoDB.Meta.get_string_value()]))
 
         return res
 
@@ -201,8 +201,8 @@ class MetaStorage(object):
 
             res = []
             for item in cursor:
-                res += [item[Definitions.MongoDB.Meta.get_string_name()],
-                        eval(item[Definitions.MongoDB.Meta.get_string_value()])]
+                res += [item[Definition.MongoDB.Meta.get_string_name()],
+                        eval(item[Definition.MongoDB.Meta.get_string_value()])]
 
             return res
         except Exception as e:
