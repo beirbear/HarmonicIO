@@ -14,7 +14,7 @@ class Setting(object):
         else:
             import socket
             from .services import Services
-            Setting.__node_addr = socket.gethostbyname(socket.gethostname())
+            Setting.__node_addr = socket.gethostname()
 
             # if addr is valid
             if Services.is_valid_ipv4(Setting.__node_addr) or Services.is_valid_ipv6(Setting.__node_addr):
