@@ -66,6 +66,14 @@ class Setting(object):
         return Setting.__master_port
 
     @staticmethod
+    def get_repo_addr():
+        return Setting.__repo_addr
+
+    @staticmethod
+    def get_repo_port():
+        return Setting.__repo_port
+
+    @staticmethod
     def get_token():
         return Setting.__token
 

@@ -71,7 +71,9 @@ def run_microbatch(port):
 
         batch_name = Setting.get_node_addr() + "_" + port
 
-        cmd = Setting.get_external_process() + [batch_name, port, Setting.get_master_addr(), str(Setting.get_master_port()), str(Setting.get_std_idle_time())]
+        cmd = Setting.get_external_process() + [batch_name, port, Setting.get_master_addr(),
+                                                str(Setting.get_master_port()), str(Setting.get_std_idle_time()),
+                                                Setting.get_repo_addr(), str(Setting.get_repo_port())]
 
         if subprocess.call(cmd) != BatchErrorCode.SUCCESS:
             return False
