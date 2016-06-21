@@ -47,7 +47,7 @@ class MessagesQueue(object):
         print("There are {0} tuples in queues. Need more PE now!".format(MessagesQueue.get_queue_length()))
 
     @staticmethod
-    async def stream_to_batch(c_addr, c_port):
+    def stream_to_batch(c_addr, c_port):
         data = bytearray()
         c_target = Definition.Server.get_str_push_req(c_addr, c_port, "None")
 
@@ -80,11 +80,7 @@ class MessagesQueue(object):
 
             return True
 
-        import asyncio
-
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(__push_stream_end_point(c_target, data))
-        loop.close()
+        while not __push_stream_end_point(c_target, data): pass
 
 
 class MessagingServices(object):
