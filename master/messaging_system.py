@@ -51,6 +51,9 @@ class MessagesQueue(object):
     @staticmethod
     def stream_to_batch(c_addr, c_port):
         data = MessagesQueue.pop_queue(0)
+        print(data)
+        import sys
+        sys.exit(0)
 
         def __push_stream_end_point(c_addr, c_port, data):
             # Create a client socket to connect to server
