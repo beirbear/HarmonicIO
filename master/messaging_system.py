@@ -1,6 +1,6 @@
 import socket
 import struct
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 from general.definition import Definition
 
 
@@ -19,7 +19,7 @@ class MessagingConfiguration(object):
 
 class MessagesQueue(object):
     __msg_queue = []
-    __pool = ThreadPoolExecutor()
+    __pool = ProcessPoolExecutor()
 
     @staticmethod
     def push_to_queue(item):
@@ -81,7 +81,7 @@ class MessagesQueue(object):
 
             return True
 
-        MessagesQueue.__pool.submit(__push_stream_end_point(c_addr, c_port, data))
+        MessagesQueue.__pool.map(__push_stream_end_point(c_addr, c_port, data))
         # while not __push_stream_end_point(c_target, data): pass
 
 
