@@ -1,5 +1,6 @@
 import socket
 import struct
+import asyncio
 from general.definition import Definition
 
 
@@ -18,6 +19,7 @@ class MessagingConfiguration(object):
 
 class MessagesQueue(object):
     __msg_queue = []
+    __loop = asyncio.get_event_loop()
 
     @staticmethod
     def push_to_queue(item):
@@ -82,10 +84,7 @@ class MessagesQueue(object):
 
             return True
 
-        import asyncio
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(__push_stream_end_point(c_target, data))
-        loop.close()
+        MessagesQueue.__loop.run_until_complete(__push_stream_end_point(c_target, data))
         # while not __push_stream_end_point(c_target, data): pass
 
 
