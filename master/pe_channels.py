@@ -38,10 +38,29 @@ class PEChannels(object):
             PEChannels.__available_channels.append(identity)
 
     @staticmethod
-    def get_available_channel():
-        if len(PEChannels.__available_channels) == 0:
-            return None
+    def get_available_channel(group=None):
+        """
+        This method get channel by the order of registration.
+        :return:
+        """
 
-        c_identity = PEChannels.__available_channels.pop(0)
-        PEChannels.__channels[c_identity].status = CStatus.BUSY
-        return PEChannels.__channels[c_identity].get_channel()
+        if not group:
+            # No group define
+            if len(PEChannels.__available_channels) == 0:
+                return None
+
+            c_identity = PEChannels.__available_channels.pop(0)
+            PEChannels.__channels[c_identity].status = CStatus.BUSY
+            return PEChannels.__channels[c_identity].get_channel()
+
+        if group == "optimize":
+            # Optimize group, utilize the cluster number into minimum
+            if len(PEChannels.__available_channels) == 0:
+                return None
+
+            if len(PEChannels.__available_channels) == 1: pass
+            else: sorted(PEChannels.__available_channels)
+
+            c_identity = PEChannels.__available_channels.pop(0)
+            PEChannels.__channels[c_identity].status = CStatus.BUSY
+            return PEChannels.__channels[c_identity].get_channel()

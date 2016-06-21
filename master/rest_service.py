@@ -1,7 +1,7 @@
 import falcon
 import subprocess
 from .configuration import Setting
-from general.definition import Definition
+from general.definition import Definition, CStatus
 from .pe_channels import PEChannels
 from .messaging_system import MessagingServices, MessagesQueue
 
@@ -60,7 +60,7 @@ class MessageStreaming(object):
             return
 
         # Check for the available channel
-        channel = PEChannels.get_available_channel()
+        channel = PEChannels.get_available_channel(group="optimize")
         if channel:
             # If channel is available
             res.body = Definition.get_channel_response(channel[0], channel[1], MessagingServices.get_new_msg_id())
@@ -102,9 +102,13 @@ class MessageStreaming(object):
                 batch_port = int(req.params[Definition.REST.Batch.get_str_batch_port()])
                 batch_status = int(req.params[Definition.REST.Batch.get_str_batch_status()])
 
-                # Register channel
-                PEChannels.register_channel(req.params[Definition.REST.Batch.get_str_batch_addr()],
-                                            batch_port, batch_status)
+                # If queue contain data, ignore update and stream from queue
+                if MessagesQueue.get_queue_length() > 0 and batch_status == CStatus.AVAILABLE:
+                    MessagesQueue.stream_to_batch(req.params[Definition.REST.Batch.get_str_batch_addr()], batch_port)
+                else:
+                    # Register channel
+                    PEChannels.register_channel(req.params[Definition.REST.Batch.get_str_batch_addr()],
+                                                batch_port, batch_status)
                 res.body = "OK"
                 res.content_type = "String"
                 res.status = falcon.HTTP_200

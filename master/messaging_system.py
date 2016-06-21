@@ -1,3 +1,8 @@
+import socket
+import struct
+from general.definition import Definition
+
+
 class MessagingConfiguration(object):
     __queue_threshold = 4
     __max_in_memory_msg = 500
@@ -40,6 +45,43 @@ class MessagesQueue(object):
     @staticmethod
     def __check_for_scale():
         print("There are {0} tuples in queues. Need more PE now!".format(MessagesQueue.get_queue_length()))
+
+    @staticmethod
+    async def stream_to_batch(c_addr, c_port):
+        data = bytearray()
+        c_target = Definition.Server.get_str_push_req(c_addr, c_port, "None")
+
+        def __push_stream_end_point(target, data):
+            # Create a client socket to connect to server
+
+            s = None
+            for res in socket.getaddrinfo(target[0], target[1], socket.AF_UNSPEC, socket.SOCK_STREAM):
+                af, socktype, proto, canonname, sa = res
+                try:
+                    s = socket.socket(af, socktype, proto)
+                except OSError as msg:
+                    s = None
+                    continue
+                try:
+                    s.connect(sa)
+                except OSError as msg:
+                    s.close()
+                    s = None
+                    continue
+                break
+            if s is None:
+                print('could not open socket')
+                return False
+
+            with s:
+                s.sendall(data)
+                s.sendall(b'')
+                s.close()
+
+            return True
+
+        while not __push_stream_end_point(c_target, data):
+            pass
 
 
 class MessagingServices(object):
