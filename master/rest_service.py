@@ -104,7 +104,7 @@ class MessageStreaming(object):
                 print("There are {0} messages in queue.".format(MessagesQueue.get_queue_length()))
                 # If queue contain data, ignore update and stream from queue
                 if MessagesQueue.get_queue_length() > 0 and batch_status == CStatus.AVAILABLE:
-                    res.data = MessagesQueue.pop_queue(0)[0]
+                    res.data = bytes(MessagesQueue.pop_queue(0)[0])
                     res.content_type = "Bytes"
                     res.status = falcon.HTTP_203
                 else:
