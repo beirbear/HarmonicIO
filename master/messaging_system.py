@@ -50,8 +50,10 @@ class MessagesQueue(object):
     def stream_to_batch(c_addr, c_port):
         data = bytearray()
         c_target = Definition.Server.get_str_push_req(c_addr, c_port, "None")
+        import asyncio
 
-        async def __push_stream_end_point(target, data):
+        @asyncio.coroutine
+        def __push_stream_end_point(target, data):
             # Create a client socket to connect to server
 
             s = None
