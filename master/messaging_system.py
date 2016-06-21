@@ -80,8 +80,11 @@ class MessagesQueue(object):
 
             return True
 
-        while not __push_stream_end_point(c_target, data):
-            pass
+        import asyncio
+
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(__push_stream_end_point(c_target, data))
+        loop.close()
 
 
 class MessagingServices(object):

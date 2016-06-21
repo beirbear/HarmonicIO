@@ -101,7 +101,7 @@ class MessageStreaming(object):
 
                 batch_port = int(req.params[Definition.REST.Batch.get_str_batch_port()])
                 batch_status = int(req.params[Definition.REST.Batch.get_str_batch_status()])
-
+                print("There are {0} messages in queue.".format(MessagesQueue.get_queue_length()))
                 # If queue contain data, ignore update and stream from queue
                 if MessagesQueue.get_queue_length() > 0 and batch_status == CStatus.AVAILABLE:
                     MessagesQueue.stream_to_batch(req.params[Definition.REST.Batch.get_str_batch_addr()], batch_port)
