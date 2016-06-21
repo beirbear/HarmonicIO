@@ -104,14 +104,16 @@ class MessageStreaming(object):
                 print("There are {0} messages in queue.".format(MessagesQueue.get_queue_length()))
                 # If queue contain data, ignore update and stream from queue
                 if MessagesQueue.get_queue_length() > 0 and batch_status == CStatus.AVAILABLE:
-                    MessagesQueue.stream_to_batch(req.params[Definition.REST.Batch.get_str_batch_addr()], batch_port)
+                    res.data = MessagesQueue.pop_queue(0)[0]
+                    res.content_type = "Bytes"
+                    res.status = falcon.HTTP_203
                 else:
                     # Register channel
                     PEChannels.register_channel(req.params[Definition.REST.Batch.get_str_batch_addr()],
                                                 batch_port, batch_status)
-                res.body = "OK"
-                res.content_type = "String"
-                res.status = falcon.HTTP_200
+                    res.body = "OK"
+                    res.content_type = "String"
+                    res.status = falcon.HTTP_200
 
             else:
                 res.body = "Invalid data type!"

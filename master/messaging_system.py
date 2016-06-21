@@ -46,10 +46,11 @@ class MessagesQueue(object):
 
     @staticmethod
     def __check_for_scale():
-        print("There are {0} tuples in queues. Need more PE now!".format(MessagesQueue.get_queue_length()))
+        print("There are {0} tuples in queues.".format(MessagesQueue.get_queue_length()))
 
     @staticmethod
-    def stream_to_batch(c_addr, c_port):
+    async def stream_to_batch(c_addr, c_port):
+
         data = MessagesQueue.pop_queue(0)[0]
 
         def __push_stream_end_point(c_addr, c_port, data):
