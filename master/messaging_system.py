@@ -51,7 +51,7 @@ class MessagesQueue(object):
         data = bytearray()
         c_target = Definition.Server.get_str_push_req(c_addr, c_port, "None")
 
-        def __push_stream_end_point(target, data):
+        async def __push_stream_end_point(target, data):
             # Create a client socket to connect to server
 
             s = None
@@ -80,7 +80,11 @@ class MessagesQueue(object):
 
             return True
 
-        while not __push_stream_end_point(c_target, data): pass
+        import asyncio
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(__push_stream_end_point(c_target, data))
+        loop.close()
+        # while not __push_stream_end_point(c_target, data): pass
 
 
 class MessagingServices(object):
