@@ -1,6 +1,6 @@
 import socket
 import struct
-import asyncio
+from concurrent.futures import ThreadPoolExecutor
 from general.definition import Definition
 
 
@@ -19,7 +19,7 @@ class MessagingConfiguration(object):
 
 class MessagesQueue(object):
     __msg_queue = []
-    __loop = asyncio.get_event_loop()
+    __pool = ThreadPoolExecutor()
 
     @staticmethod
     def push_to_queue(item):
@@ -54,7 +54,6 @@ class MessagesQueue(object):
         c_target = Definition.Server.get_str_push_req(c_addr, c_port, "None")
         import asyncio
 
-        @asyncio.coroutine
         def __push_stream_end_point(target, data):
             # Create a client socket to connect to server
 
@@ -84,7 +83,7 @@ class MessagesQueue(object):
 
             return True
 
-        MessagesQueue.__loop.run_until_complete(__push_stream_end_point(c_target, data))
+        MessagesQueue.__pool.submit(__push_stream_end_point(c_target, data))
         # while not __push_stream_end_point(c_target, data): pass
 
 
