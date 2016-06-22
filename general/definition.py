@@ -15,6 +15,10 @@ class Definition(object):
         return "node_name"
 
     @staticmethod
+    def get_str_node_role():
+        return "node_role"
+
+    @staticmethod
     def get_str_node_addr():
         return "node_addr"
 

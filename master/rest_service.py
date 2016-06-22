@@ -32,6 +32,7 @@ class RequestStatus(object):
         if req.params[Definition.get_str_token()] == Setting.get_token():
             result = self.get_machine_status()
             res.body = '{ "' + Definition.get_str_node_name() + '": "' + Setting.get_node_name() + '", \
+                         "' + Definition.get_str_node_role() + '": "master", \
                          "' + Definition.get_str_node_addr() + '": "' + Setting.get_node_addr() + '", \
                          "' + Definition.get_str_load1() + '": ' + result[0] + ', \
                          "' + Definition.get_str_load5() + '": ' + result[1] + ', \
