@@ -84,7 +84,7 @@ class DataObject(object):
                     GET: /dataRepository?token={None}&command={count}
                     Meaning: Count total record in the table
                     """
-                    res.body = "Total records:" + str(self.__meta_storage.count_total_features())
+                    res.body = str(self.__meta_storage.count_total_features())
                     res.content_type = "String"
                     res.status = falcon.HTTP_200
 
