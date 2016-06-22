@@ -125,6 +125,34 @@ class MessageStreaming(object):
             res.status = falcon.HTTP_406
 
 
+class MessagesQuery(object):
+    def __init__(self):
+        pass
+
+    def on_get(self, req, res):
+        """
+        GET: /messagesQuery?token=None&command=queueLength
+         This function inquiry about the number of messages in queue. For dealing with create a new instance.
+        """
+        if not Definition.get_str_token() in req.params:
+            res.body = "Token is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        if not Definition.MessagesQueue.get_str_command() in req.params:
+            res.body = "No command specified."
+            res.content_type = "String"
+            res.status = falcon.HTTP_406
+            return
+
+        if req.params[Definition.MessagesQueue.get_str_command()] == Definition.MessagesQueue.get_get_str_queue_length():
+            res.body = MessagesQueue.get_queue_length()
+            res.content_type = "String"
+            res.status = falcon.HTTP_200
+            return
+
+
 class RESTService(object):
     def __init__(self):
         # Initialize REST Services
@@ -136,6 +164,9 @@ class RESTService(object):
 
         # Add route for stream request
         api.add_route('/' + Definition.REST.get_str_stream_req(), MessageStreaming())
+
+        # Add route for msg query
+        api.add_route('/' + Definition.REST.get_str_msg_query(), MessagesQuery())
 
         # Establishing a REST server
         self.__server = make_server(Setting.get_node_addr(), Setting.get_node_port(), api)

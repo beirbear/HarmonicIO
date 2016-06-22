@@ -1,7 +1,10 @@
 from datetime import datetime
 
-class Definition(object):
 
+class Definition(object):
+    """
+    This class is a definition for data repository.
+    """
     class Services(object):
 
         @staticmethod

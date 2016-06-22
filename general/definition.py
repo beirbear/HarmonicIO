@@ -103,6 +103,10 @@ class Definition(object):
             return "streamRequest"
 
         @staticmethod
+        def get_str_msg_query():
+            return "messagesQuery"
+
+        @staticmethod
         def get_str_token():
             return "token"
 
@@ -152,3 +156,13 @@ class Definition(object):
         @staticmethod
         def get_str_lc_storage():
             return "lc_storage"
+
+    class MessagesQueue(object):
+
+        @staticmethod
+        def get_str_command():
+            return "command"
+
+        @staticmethod
+        def get_get_str_queue_length():
+            return "queueLength"
