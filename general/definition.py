@@ -174,3 +174,8 @@ class Definition(object):
         @staticmethod
         def get_str_current_id():
             return "current_id"
+
+    class ChannelStatus(object):
+        @staticmethod
+        def get_str_pe_status():
+            return "pe_status"

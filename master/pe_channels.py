@@ -64,3 +64,8 @@ class PEChannels(object):
             c_identity = PEChannels.__available_channels.pop(0)
             PEChannels.__channels[c_identity].status = CStatus.BUSY
             return PEChannels.__channels[c_identity].get_channel()
+
+    @staticmethod
+    def view_available_channel():
+        return [item for item in PEChannels.__available_channels]
+

@@ -159,6 +159,12 @@ class MessagesQuery(object):
             res.status = falcon.HTTP_200
             return
 
+        if req.params[Definition.MessagesQueue.get_str_command()] == Definition.ChannelStatus.get_str_pe_status():
+            res.body = str(PEChannels.view_available_channel())
+            res.content_type = "String"
+            res.status = falcon.HTTP_200
+            return
+
 
 class RESTService(object):
     def __init__(self):
