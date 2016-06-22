@@ -146,8 +146,14 @@ class MessagesQuery(object):
             res.status = falcon.HTTP_406
             return
 
-        if req.params[Definition.MessagesQueue.get_str_command()] == Definition.MessagesQueue.get_get_str_queue_length():
-            res.body = MessagesQueue.get_queue_length()
+        if req.params[Definition.MessagesQueue.get_str_command()] == Definition.MessagesQueue.get_str_queue_length():
+            res.body = str(MessagesQueue.get_queue_length())
+            res.content_type = "String"
+            res.status = falcon.HTTP_200
+            return
+
+        if req.params[Definition.MessagesQueue.get_str_command()] == Definition.MessagesQueue.get_str_current_id():
+            res.body = str(MessagingServices.get_current_id())
             res.content_type = "String"
             res.status = falcon.HTTP_200
             return

@@ -164,5 +164,9 @@ class Definition(object):
             return "command"
 
         @staticmethod
-        def get_get_str_queue_length():
+        def get_str_queue_length():
             return "queueLength"
+
+        @staticmethod
+        def get_str_current_id():
+            return "current_id"

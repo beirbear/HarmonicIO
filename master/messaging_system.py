@@ -93,3 +93,7 @@ class MessagingServices(object):
     def get_new_msg_id():
         MessagingServices.__msg_id += 1
         return MessagingServices.__msg_id
+
+    @staticmethod
+    def get_current_id():
+        return MessagingServices.__msg_id
