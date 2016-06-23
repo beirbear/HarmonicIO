@@ -59,7 +59,7 @@ class PEChannels(object):
                 return None
 
             if len(PEChannels.__available_channels) == 1: pass
-            else: sorted(PEChannels.__available_channels)
+            else: PEChannels.__available_channels = sorted(PEChannels.__available_channels)
 
             c_identity = PEChannels.__available_channels.pop(0)
             PEChannels.__channels[c_identity].status = CStatus.BUSY
