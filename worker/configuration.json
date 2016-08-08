@@ -1,6 +1,7 @@
 {
-  "node_name": "Worker 1",
+  "node_name": "auto",
   "node_port": 8080,
+  "node_addr": "auto",
   "master_addr": "192.168.1.23",
   "master_port": 8080,
   "node_data_port_range": [8090, 8099],

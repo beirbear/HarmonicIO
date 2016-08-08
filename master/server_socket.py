@@ -26,11 +26,15 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
         # Interpret the header for file size
         file_size = struct.unpack(">Q", data[8:16])[0]
         """
+        try:
+            c = True
+            while c != b"":
+                c = self.request.recv(2048)
+                data += c
 
-        c = True
-        while c != b"":
-            c = self.request.recv(2048)
-            data += c
+            # Then, push data messaging system.
+            MessagesQueue.push_to_queue(data)
 
-        # Then, push data messaging system.
-        MessagesQueue.push_to_queue(data)
+        except:
+            from general.services import Services
+            Services.e_print("Insufficient memory for storing g object.")

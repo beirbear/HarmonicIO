@@ -140,6 +140,21 @@ class Setting(object):
                             Setting.__master_port = cfg[Definition.get_str_master_port()]
                             Setting.__repo_addr = cfg[Definition.get_str_repo_addr()].strip()
                             Setting.__repo_port = cfg[Definition.get_str_repo_port()]
+
+                            # Check for auto node name
+                            if Setting.__node_name.lower() == "auto":
+                                # Get node name from host name
+                                import socket
+                                Setting.__node_name = socket.gethostname()
+
+                            # Check for overriding node address
+                            if cfg["node_addr"] and cfg["node_addr"] != "auto":
+                                # Set node name automatically from hostname
+                                from general.services import Services
+
+                                if Services.is_valid_ipv4(cfg["node_addr"]) or Services.is_valid_ipv6(cfg["node_addr"]):
+                                    Setting.__node_addr = cfg["node_addr"]
+
                             print("Load setting successful")
                 except:
                     Services.t_print("Invalid data in configuration file.")
