@@ -24,6 +24,9 @@ if __name__ == "__main__":
     # Load configuration from file
     Setting.read_cfg_from_file()
 
+    # Override master and repo address
+    Setting.set_variables_from_ev()
+
     # Print instance information
     print("Node name: {0}\nNode address: {1}".format(Setting.get_node_name(), Setting.get_node_addr()))
     print("Port range: {0} to {1} ({2} ports available) ".format(Setting.get_data_port_start(),

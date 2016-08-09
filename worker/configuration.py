@@ -14,6 +14,13 @@ class Setting(object):
     __repo_port = None
 
     @staticmethod
+    def set_variables_from_ev():
+        import os
+        Setting.__master_addr = os.environ.get("MASTER_ADDR")
+        Setting.__repo_addr = os.environ.get("REPO_ADDR")
+
+
+    @staticmethod
     def set_node_addr(addr=None):
         if addr:
             Setting.__node_addr = addr
