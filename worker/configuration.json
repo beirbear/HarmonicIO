@@ -6,7 +6,7 @@
   "master_port": 8080,
   "node_data_port_range": [8090, 8099],
   "std_idle_time": 5,
-  "ext_process": [ "python", "/home/ubuntu/HarmonicPE/batch.py" ],
+  "ext_process": [ "python", "/HarmonicPE/batch.py" ],
   "repo_addr": "192.168.1.233",
   "repo_port": 8080
 }
