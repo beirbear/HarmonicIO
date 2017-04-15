@@ -89,6 +89,10 @@ class Setting(object):
         return Setting.__max_workers
 
     @staticmethod
+    def get_min_worker():
+        return 1
+
+    @staticmethod
     def get_external_process():
         return Setting.__ext_process
 

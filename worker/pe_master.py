@@ -28,7 +28,12 @@ class ChannelStatus(object):
 
 class PEsMaster(object):
     def __init__(self):
-        self.__pe_pool = concurrent.futures.ProcessPoolExecutor(max_workers=Setting.get_max_worker())
+        # For production setting
+        # self.__pe_pool = concurrent.futures.ProcessPoolExecutor(max_workers=Setting.get_max_worker())
+
+        # For testing setting
+        self.__pe_pool = concurrent.futures.ProcessPoolExecutor(max_workers=Setting.get_min_worker())
+
         self.__ports = []
 
         # Define port status
@@ -55,7 +60,10 @@ class PEsMaster(object):
         return None
 
     def run_pe(self):
-        for i in range(Setting.get_max_worker()):
+        # For production setting
+        # for i in range(Setting.get_max_worker()):
+        for i in range(Setting.get_min_worker()):
+            # For testing setting
             port = self.__get_available_port()
 
             if not port:
@@ -71,9 +79,15 @@ def run_microbatch(port):
 
         batch_name = Setting.get_node_addr() + "_" + port
 
+        # Production setting
+        # cmd = Setting.get_external_process() + [batch_name, port, Setting.get_master_addr(),
+        #                                         str(Setting.get_master_port()), str(Setting.get_std_idle_time()),
+        #                                         Setting.get_repo_addr(), str(Setting.get_repo_port())]
+        # Testing Setting
         cmd = Setting.get_external_process() + [batch_name, port, Setting.get_master_addr(),
                                                 str(Setting.get_master_port()), str(Setting.get_std_idle_time()),
-                                                Setting.get_repo_addr(), str(Setting.get_repo_port())]
+                                                Setting.get_repo_addr(), str(Setting.get_repo_port()),
+                                                "127.0.0.1"]
 
         if subprocess.call(cmd) != BatchErrorCode.SUCCESS:
             return False
@@ -82,4 +96,5 @@ def run_microbatch(port):
 
     while not call_ext_process():
         # If the process error, call it again without delay
+        print('Microbatch launching error!')
         pass

@@ -1,12 +1,12 @@
 {
   "node_name": "auto",
-  "node_port": 8080,
-  "node_addr": "auto",
-  "master_addr": "192.168.1.23",
+  "node_port": 8081,
+  "node_addr": "127.0.0.1",
+  "master_addr": "127.0.0.1",
   "master_port": 8080,
   "node_data_port_range": [8090, 8099],
   "std_idle_time": 5,
-  "ext_process": [ "python", "/HarmonicPE/batch.py" ],
-  "repo_addr": "192.168.1.233",
-  "repo_port": 8080
+  "ext_process": [ "python2", "/home/beir/Desktop/HarmonicPE/batch.py" ],
+  "repo_addr": "127.0.0.1",
+  "repo_port": 8099
 }
