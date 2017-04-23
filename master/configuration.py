@@ -70,6 +70,7 @@ class Setting(object):
                     # Check for the json structure
                     if  Definition.get_str_node_name() in cfg and \
                         Definition.get_str_node_port() in cfg and \
+                        Definition.get_str_master_addr() in cfg and \
                         Definition.get_str_data_port_range() in cfg and \
                         Definition.get_str_idle_time() in cfg:
                         # Check port number is int or not
@@ -88,19 +89,21 @@ class Setting(object):
                              cfg[Definition.get_str_data_port_range()][1]:
                             Services.t_print("Start port range must greater than stop port range")
                         else:
-                            Setting.set_node_addr()
                             Setting.__node_name = cfg[Definition.get_str_node_name()].strip()
                             Setting.__node_port = cfg[Definition.get_str_node_port()]
                             Setting.__node_data_port_start = cfg[Definition.get_str_data_port_range()][0]
                             Setting.__node_data_port_stop = cfg[Definition.get_str_data_port_range()][1]
                             Setting.__std_idle_time = cfg[Definition.get_str_idle_time()]
                             print("Load setting successful")
-                    if  Definition.get_str_master_addr() in cfg and \
-                        (Services.is_valid_ipv4(cfg[Definition.get_str_master_addr()]) or \
-                        Services.is_valid_ipv6(cfg[Definition.get_str_master_addr()])):
-                        Setting.set_node_addr(cfg[Definition.get_str_master_addr()])
-                    else:
-                        Services.t_print("Invalid master address")
 
+                        if  Services.is_valid_ipv4(cfg[Definition.get_str_master_addr()]) or \
+                            Services.is_valid_ipv6(cfg[Definition.get_str_master_addr()]):
+                            Setting.set_node_addr(cfg[Definition.get_str_master_addr()])
+                        else:
+                            print("Assigning master ip address automatically.")
+                            Setting.set_node_addr()
+
+                    else:
+                        Services.t_print("Invalid data in configuration file.")
                 except:
                     Services.t_print("Invalid data in configuration file.")

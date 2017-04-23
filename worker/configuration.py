@@ -117,7 +117,8 @@ class Setting(object):
                         Definition.get_str_master_addr() in cfg and \
                         Definition.get_str_master_port() in cfg and \
                         Definition.get_str_repo_addr() in cfg and \
-                        Definition.get_str_repo_port() in cfg:
+                        Definition.get_str_repo_port() in cfg and \
+                        Definition.get_str_workers_num() in cfg:
                         # Check port number is int or not
                         if not isinstance(cfg[Definition.get_str_node_port()], int):
                             Services.t_print("Node port must be integer")
@@ -140,7 +141,6 @@ class Setting(object):
                         else:
                             Setting.set_node_addr()
                             import multiprocessing
-                            Setting.__max_workers = multiprocessing.cpu_count()
                             Setting.__node_name = cfg[Definition.get_str_node_name()].strip()
                             Setting.__node_port = cfg[Definition.get_str_node_port()]
                             Setting.__node_data_port_start = cfg[Definition.get_str_data_port_range()][0]
@@ -151,6 +151,24 @@ class Setting(object):
                             Setting.__master_port = cfg[Definition.get_str_master_port()]
                             Setting.__repo_addr = cfg[Definition.get_str_repo_addr()].strip()
                             Setting.__repo_port = cfg[Definition.get_str_repo_port()]
+
+                            # Check for the number of worker
+                            if isinstance(cfg[Definition.get_str_workers_num()], str):
+                                if cfg[Definition.get_str_workers_num()].lower() == "auto" or \
+                                   cfg[Definition.get_str_workers_num()].lower() == "max":
+                                    Setting.__max_workers = multiprocessing.cpu_count()
+                                elif cfg[Definition.get_str_workers_num()].lower() == "min":
+                                    Setting.__max_workers = Setting.get_min_worker()
+                                else:
+                                    Services.t_print("Invalid number of PCs.")
+                            elif isinstance(cfg[Definition.get_str_workers_num()], int):
+                                Setting.__max_workers = cfg[Definition.get_str_workers_num()]
+                                if Setting.__max_workers < 1:
+                                    Services.t_print("Invalid number of PCs.")
+                                else:
+                                    print("Number of PCs is overridden to " + str(cfg[Definition.get_str_workers_num()]) + ".")
+                            else:
+                                Services.t_print("Invalid number of PCs.")
 
                             # Check for auto node name
                             if Setting.__node_name.lower() == "auto":
@@ -167,6 +185,8 @@ class Setting(object):
                                     Setting.__node_addr = cfg["node_addr"]
 
                             print("Load setting successful")
+                    else:
+                        Services.t_print("Required parameters are not present.")
                 except:
                     Services.t_print("Invalid data in configuration file.")
 

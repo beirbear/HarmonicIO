@@ -28,11 +28,7 @@ class ChannelStatus(object):
 
 class PEsMaster(object):
     def __init__(self):
-        # For production setting
-        # self.__pe_pool = concurrent.futures.ProcessPoolExecutor(max_workers=Setting.get_max_worker())
-
-        # For testing setting
-        self.__pe_pool = concurrent.futures.ProcessPoolExecutor(max_workers=Setting.get_min_worker())
+        self.__pe_pool = concurrent.futures.ProcessPoolExecutor(max_workers=Setting.get_max_worker())
 
         self.__ports = []
 
@@ -61,8 +57,7 @@ class PEsMaster(object):
 
     def run_pe(self):
         # For production setting
-        # for i in range(Setting.get_max_worker()):
-        for i in range(Setting.get_min_worker()):
+        for i in range(Setting.get_max_worker()):
             # For testing setting
             port = self.__get_available_port()
 

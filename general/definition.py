@@ -47,6 +47,10 @@ class Definition(object):
         return "master_port"
 
     @staticmethod
+    def get_str_workers_num():
+        return "workers_num"
+
+    @staticmethod
     def get_str_repo_addr():
         return "repo_addr"
 
