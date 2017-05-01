@@ -4,6 +4,7 @@ from .configuration import Setting
 from general.definition import Definition, CStatus
 from .pe_channels import PEChannels
 from .messaging_system import MessagingServices, MessagesQueue
+from .functions_list import FunctionsList
 
 
 class RequestStatus(object):
@@ -166,6 +167,83 @@ class MessagesQuery(object):
             return
 
 
+class RegisteredFunctions(object):
+    def __init__(self):
+        pass
+
+    def on_get(self, req, res):
+        """
+        GET: /registeredFunctions?token=None&command=pull&name=value
+        This function inquiry about the number of messages in queue. For dealing with create a new instance.
+        """
+        if not Definition.get_str_token() in req.params:
+            res.body = "Token is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        if not Definition.RegisteredFunctions.get_str_command() in req.params:
+            res.body = "No command specified."
+            res.content_type = "String"
+            res.status = falcon.HTTP_406
+            return
+
+        if req.params[Definition.get_str_token()] == Setting.get_token():
+            print(req.params)
+            if req.params[Definition.RegisteredFunctions.get_str_command()] == Definition.RegisteredFunctions.get_str_cmd_pull() and \
+               FunctionsList.is_function_exist(req.params[Definition.RegisteredFunctions.get_str_cmd_name()]):
+                res.body = FunctionsList.get_function(req.params[Definition.RegisteredFunctions.get_str_cmd_name()])
+                res.content_type = "Bytes"
+                res.status = falcon.HTTP_203
+            elif req.params[Definition.RegisteredFunctions.get_str_command()] == Definition.RegisteredFunctions.get_str_cmd_count():
+                res.body = str(FunctionsList.total_functions())
+                res.content_type = "String"
+                res.status = falcon.HTTP_200
+            else:
+                res.body = "Invalid command!"
+                res.content_type = "String"
+                res.status = falcon.HTTP_406
+        else:
+            res.body = "Invalid token ID."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+
+    def on_post(self, req, res):
+        """
+        POST: /registeredFunctions?token=None&command=push&name=value
+              The serialized function must be present in the post content.
+        """
+        if not Definition.get_str_token() in req.params:
+            res.body = "Token is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        if not Definition.RegisteredFunctions.get_str_command() in req.params:
+            res.body = "No command specified."
+            res.content_type = "String"
+            res.status = falcon.HTTP_406
+            return
+
+        if req.params[Definition.get_str_token()] == Setting.get_token():
+            print(req.params)
+
+            if req.params[Definition.RegisteredFunctions.get_str_command()] == Definition.RegisteredFunctions.get_str_cmd_push():
+                # Add function to the system
+                FunctionsList.add_function(req.params[Definition.RegisteredFunctions.get_str_cmd_name()], req.stream.read())
+                res.body = "Function " + req.params[Definition.RegisteredFunctions.get_str_cmd_name()] + " is registered."
+                res.content_type = "String"
+                res.status = falcon.HTTP_200
+            else:
+                res.body = "Function " + req.params[Definition.RegisteredFunctions.get_str_cmd_name()] + " is not registered."
+                res.content_type = "String"
+                res.status = falcon.HTTP_500
+        else:
+            res.body = "Invalid token ID."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+
+
 class RESTService(object):
     def __init__(self):
         # Initialize REST Services
@@ -180,6 +258,9 @@ class RESTService(object):
 
         # Add route for msg query
         api.add_route('/' + Definition.REST.get_str_msg_query(), MessagesQuery())
+
+        # Add route for function system
+        api.add_route('/' + Definition.REST.get_str_reg_func(), RegisteredFunctions())
 
         # Establishing a REST server
         self.__server = make_server(Setting.get_node_addr(), Setting.get_node_port(), api)

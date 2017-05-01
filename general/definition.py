@@ -115,6 +115,10 @@ class Definition(object):
             return "messagesQuery"
 
         @staticmethod
+        def get_str_reg_func():
+            return "registeredFunctions"
+
+        @staticmethod
         def get_str_token():
             return "token"
 
@@ -183,3 +187,29 @@ class Definition(object):
         @staticmethod
         def get_str_pe_status():
             return "pe_status"
+
+    class RegisteredFunctions(object):
+
+        @staticmethod
+        def get_str_command():
+            return "command"
+
+        @staticmethod
+        def get_str_cmd_pull():
+            return "pull"
+
+        @staticmethod
+        def get_str_cmd_push():
+            return "push"
+
+        @staticmethod
+        def get_str_cmd_name():
+            return "name"
+
+        @staticmethod
+        def get_str_cmd_count():
+            return "count"
+
+        @staticmethod
+        def get_str_cmd_delete():
+            return "delete"
