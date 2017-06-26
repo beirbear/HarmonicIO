@@ -9,6 +9,13 @@ class CStatus:
     BUSY = 1
 
 
+class CRole:
+    STREAM_CONNECTOR = 0
+    MASTER = 1
+    WORKER = 2
+    MESSAGING_SYSTEM = 4
+
+
 class Definition(object):
     @staticmethod
     def get_str_node_name():
@@ -33,10 +40,6 @@ class Definition(object):
     @staticmethod
     def get_str_server_port():
         return "server_port"
-
-    @staticmethod
-    def get_str_ext_process():
-        return "ext_process"
 
     @staticmethod
     def get_str_master_addr():
@@ -87,10 +90,28 @@ class Definition(object):
         return "load15"
 
     @staticmethod
+    def get_str_tuple_id():
+        return "t_id"
+
+    @staticmethod
+    def get_str_last_update():
+        return "last_upd"
+
+    @staticmethod
     def get_cpu_load_command():
         return ['uptime', '|', 'awk', '{ print $8 $9 $10}']
 
-    class Server(object):
+    class Master(object):
+
+        class DataLog(object):
+            @staticmethod
+            def get_str_data_cmd():
+                return "m_cmd"
+
+            @staticmethod
+            def get_str_release_data():
+                return "release"
+
         @staticmethod
         def get_str_check_master(addr, port, token):
             return "http://" + addr + ":" + str(port) + "/" + Definition.REST.get_str_status() + "?" + \
@@ -100,6 +121,30 @@ class Definition(object):
         def get_str_push_req(addr, port, token):
             return "http://" + addr + ":" + str(port) + "/" + Definition.REST.get_str_stream_req() + "?" + \
                    Definition.REST.get_str_token() + "=" + token
+
+        @staticmethod
+        def get_str_push_req_container_ext(container_name, container_os, priority, source_name, digest):
+            return  "&" + Definition.Container.get_str_container_name() + "=" + container_name + \
+                    "&" + Definition.Container.get_str_container_os() + "=" + container_os + \
+                    "&" + Definition.Container.get_str_container_priority() + "=" + str(priority) + \
+                    "&" + Definition.Container.get_str_data_source() + "=" + source_name + \
+                    "&" + Definition.Container.get_str_data_digest() + "=" + digest
+
+        @staticmethod
+        def get_str_end_point(node_addr, node_port, role, master_subcommand=list()):
+            response = dict()
+            response[Definition.get_str_node_addr()] = node_addr
+            response[Definition.get_str_node_port()] = node_port
+            response[Definition.get_str_node_role()] = role
+            response[Definition.Master.DataLog.get_str_data_cmd()] = master_subcommand
+            return str(response)
+
+        @staticmethod
+        def get_str_end_point_MS(setting, sc=None):
+            return Definition.Master.get_str_end_point(setting.get_node_addr(),
+                                                       setting.get_data_port_start(),
+                                                       CRole.MESSAGING_SYSTEM,
+                                                       master_subcommand=sc)
 
     class REST(object):
         @staticmethod
@@ -122,6 +167,10 @@ class Definition(object):
         def get_str_token():
             return "token"
 
+        @staticmethod
+        def get_str_docker():
+            return "docker"
+
         class Batch(object):
             @staticmethod
             def get_str_batch_addr():
@@ -134,40 +183,6 @@ class Definition(object):
             @staticmethod
             def get_str_batch_status():
                 return "batch_status"
-
-    @staticmethod
-    def get_channel_response(addr, port, t_id):
-        return '{ "c_addr": "' + addr + '", "c_port": ' + str(port) + ', "t_id": ' + str(t_id) + '}'
-
-    @staticmethod
-    def get_str_mongodb_setting():
-        return "mongodb_setting"
-
-    class MongoDB(object):
-
-        @staticmethod
-        def get_str_connection_string():
-            return "connection_string"
-
-        @staticmethod
-        def get_str_db_name():
-            return "db_name"
-
-        @staticmethod
-        def get_str_db_feature():
-            return "db_features"
-
-        @staticmethod
-        def get_str_db_tree():
-            return "db_tree"
-
-        @staticmethod
-        def get_str_db_meta():
-            return "db_meta"
-
-        @staticmethod
-        def get_str_lc_storage():
-            return "lc_storage"
 
     class MessagesQueue(object):
 
@@ -188,28 +203,97 @@ class Definition(object):
         def get_str_pe_status():
             return "pe_status"
 
-    class RegisteredFunctions(object):
+    class Container(object):
+        @staticmethod
+        def get_str_container_name():
+            return "c_name"
+
+        @staticmethod
+        def get_str_container_os():
+            return "c_os"
+
+        @staticmethod
+        def get_str_container_priority():
+            return "priority"
+
+        @staticmethod
+        def get_str_data_source():
+            return "source"
+
+        @staticmethod
+        def get_str_data_digest():
+            return "digest"
+
+        class Status(object):
+
+            @staticmethod
+            def get_str_sid():
+                return "short_id"
+
+            @staticmethod
+            def get_str_image():
+                return "image"
+
+            @staticmethod
+            def get_str_status():
+                return "status"
+
+    class Docker(object):
 
         @staticmethod
         def get_str_command():
             return "command"
 
         @staticmethod
-        def get_str_cmd_pull():
-            return "pull"
+        def get_str_create():
+            return "create"
 
         @staticmethod
-        def get_str_cmd_push():
-            return "push"
+        def get_str_remove():
+            return "remove"
 
         @staticmethod
-        def get_str_cmd_name():
-            return "name"
+        def get_str_list():
+            return "list"
 
         @staticmethod
-        def get_str_cmd_count():
-            return "count"
+        def get_str_status():
+            return "status"
 
         @staticmethod
-        def get_str_cmd_delete():
-            return "delete"
+        def get_str_query():
+            return "query"
+
+        class HDE(object):
+
+            @staticmethod
+            def get_str_node_name():
+                return "HDE_NODE_NAME"
+
+            @staticmethod
+            def get_str_node_addr():
+                return "HDE_NODE_ADDR"
+
+            @staticmethod
+            def get_str_node_data_port():
+                return "HDE_NODE_DATA_PORT"
+
+            @staticmethod
+            def get_str_node_forward_port():
+                return "HDE_NODE_PORT"
+
+            @staticmethod
+            def get_str_master_addr():
+                return "HDE_MASTER_ADDR"
+
+            @staticmethod
+            def get_str_master_port():
+                return "HDE_MASTER_PORT"
+
+            @staticmethod
+            def get_str_std_idle_time():
+                return "HDE_STD_IDLE_TIME"
+
+            @staticmethod
+            def get_str_token():
+                return "HDE_TOKEN"

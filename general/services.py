@@ -1,9 +1,38 @@
 import os.path
-import sys
+import subprocess
+from colors import red, green, yellow, blue
+from .definition import Definition, CRole
+
+
+class SysOut(object):
+
+    @staticmethod
+    def warn_string(msg):
+        print(yellow("[WARN: " + msg + "]"))
+
+    @staticmethod
+    def out_string(msg):
+        print(green("[OUT: " + msg + "]"))
+
+    @staticmethod
+    def err_string(msg):
+        print(red("[ERR: " + msg + "]"))
+
+    @staticmethod
+    def terminate_string(msg, terminate_code=-1):
+        print(red("[ERR-EXIT: " + msg + "]"))
+        exit(terminate_code)
+
+    @staticmethod
+    def debug_string(msg):
+        print(blue("[DEB: " + msg + "]"))
+
+    @staticmethod
+    def usr_string(msg):
+        print(msg)
 
 
 class Services(object):
-
     """
     Service method, check for file exist in the local machine
     """
@@ -12,22 +41,40 @@ class Services(object):
         return os.path.exists(file)
 
     @staticmethod
+    def is_str_is_digit(msg):
+        return msg.isdigit()
+
+    @staticmethod
     def is_folder_exist(folder):
         return os.path.isdir(folder)
 
     @staticmethod
-    def t_print(*args, **kwargs):
-        print(*args, file=sys.stderr, **kwargs)
-        exit()
-
-    @staticmethod
-    def e_print(*args, **kwargs):
-        print(*args, file=sys.stderr, **kwargs)
-
-    @staticmethod
-    def get_host_name_i():
+    def get_host_name_i(order=0):
         import subprocess
-        return subprocess.check_output(["hostname", "-I"]).decode('utf-8').strip()
+        return subprocess.check_output(["hostname", "-I"]).decode('utf-8').strip().split()[order]
+
+    @staticmethod
+    def get_current_timestamp():
+        import time
+        return int(time.time())
+
+    @staticmethod
+    def get_machine_status(setting, role):
+
+        # Get load value
+        res = str(subprocess.check_output(Definition.get_cpu_load_command())).strip()
+        res = res.replace(",", "").replace("\\n", "").replace("'", "")
+        *_, load1, load5, load15 = res.split(" ")
+
+        body = dict()
+        body[Definition.get_str_node_name()] = setting.get_node_name()
+        body[Definition.get_str_node_role()] = role
+        body[Definition.get_str_node_addr()] = setting.get_node_addr()
+        body[Definition.get_str_load1()] = load1
+        body[Definition.get_str_load5()] = load5
+        body[Definition.get_str_load15()] = load15
+
+        return body
 
     @staticmethod
     def is_valid_ipv4(ip):

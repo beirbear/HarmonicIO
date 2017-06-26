@@ -2,8 +2,11 @@
 Worker entry point.
 """
 
-
+import threading
+import urllib3
 from .configuration import Setting
+from general.services import SysOut, Services
+from general.definition import Definition, CRole
 
 
 def run_rest_service():
@@ -15,11 +18,38 @@ def run_rest_service():
     rest.run()
 
 
+def update_worker_status():
+    """
+    Update the worker status to the master as well as container info.
+    """
+    threading.Timer(30, update_worker_status).start()
+    """
+    Get machine status by calling a unix command and fetch for load average
+    """
+
+    s_content = Services.get_machine_status(Setting, CRole.WORKER)
+    s_content[Definition.REST.get_str_docker()] = DockerService.get_containers_status()
+
+    html = urllib3.PoolManager()
+    try:
+        r = html.request('PUT', Definition.Master.get_str_check_master(Setting.get_master_addr(), Setting.get_master_port(), Setting.get_token()),
+                     body=str(s_content))
+
+        if r.status != 200:
+            SysOut.err_string("Cannot update worker status to the master!")
+        else:
+            SysOut.debug_string("Reports status to master node complete.")
+
+    except:
+        SysOut.err_string("Master is not available!")
+
+
+
 if __name__ == "__main__":
     """
     Entry point
     """
-    print("Running Harmonic Worker")
+    SysOut.out_string("Running Harmonic Worker")
 
     # Load configuration from file
     Setting.read_cfg_from_file()
@@ -28,17 +58,17 @@ if __name__ == "__main__":
     # Setting.set_variables_from_ev()
 
     # Print instance information
-    print("Node name: {0}\nNode address: {1}".format(Setting.get_node_name(), Setting.get_node_addr()))
-    print("Port range: {0} to {1} ({2} ports available) ".format(Setting.get_data_port_start(),
+    SysOut.out_string("Node name: " + Setting.get_node_name())
+    SysOut.out_string("Node address: " + Setting.get_node_addr())
+    SysOut.out_string("Node port: " + str(Setting.get_node_port()))
+    SysOut.out_string("Port range: {0} to {1} ({2} ports available)".format(Setting.get_data_port_start(),
                                                                  Setting.get_data_port_stop(),
                                                                  Setting.get_data_port_stop() -
                                                                  Setting.get_data_port_start()))
-    print("Number of workers: {0}".format(Setting.get_max_worker()))
 
-    # Create PE channels
-    from .pe_master import PEsMaster
-    pe = PEsMaster()
-    pe.run_pe()
+    # Init docker driver
+    from .docker_service import DockerService
+    DockerService.init()
 
     # Create thread for handling REST Service
     from concurrent.futures import ThreadPoolExecutor
@@ -47,4 +77,6 @@ if __name__ == "__main__":
     # Binding commander to the rest service and enable REST service
     pool.submit(run_rest_service)
 
+    # Update the worker status
+    update_worker_status()
 

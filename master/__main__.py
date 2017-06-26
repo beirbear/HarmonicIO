@@ -1,3 +1,6 @@
+from general.services import SysOut
+
+
 """
 Master entry point
 """
@@ -10,6 +13,7 @@ def run_rest_service():
     from .rest_service import RESTService
     rest = RESTService()
     rest.run()
+
 
 def run_msg_service():
     """
@@ -27,7 +31,7 @@ def run_msg_service():
     # Exit the server thread when the main thread terminates
     server_thread.daemon = True
 
-    print("Enable Messaging System on port " + str(Setting.get_data_port_start()))
+    SysOut.out_string("Enable Messaging System on port: " + str(Setting.get_data_port_start()))
 
     server_thread.start()
 
@@ -35,22 +39,21 @@ def run_msg_service():
     # server.shutdown()
     # server.server_close()
 
+
 if __name__ == '__main__':
     """
     Entry point
     """
-    print("Running Harmonic Master")
+    SysOut.out_string("Running Harmonic Master")
 
     # Load configuration from file
     from .configuration import Setting
     Setting.read_cfg_from_file()
 
     # Print instance information
-    print("Node name: {0}\nNode address: {1}".format(Setting.get_node_name(), Setting.get_node_addr()))
-    # print("Port range: {0} to {1} ({2} ports available) ".format(Setting.get_data_port_start(),
-    #                                                              Setting.get_data_port_stop(),
-    #                                                              Setting.get_data_port_stop() -
-    #                                                              Setting.get_data_port_start()))
+    SysOut.out_string("Node name: " + Setting.get_node_name())
+    SysOut.out_string("Node address: " + Setting.get_node_addr())
+    SysOut.out_string("Node port: " + str(Setting.get_node_port()))
 
     # Create thread for handling REST Service
     from concurrent.futures import ThreadPoolExecutor

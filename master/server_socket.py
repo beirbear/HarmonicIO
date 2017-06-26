@@ -32,6 +32,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                 c = self.request.recv(2048)
                 data += c
 
+            print(str(data[0:128], 'UTF-8'))
             # Then, push data messaging system.
             MessagesQueue.push_to_queue(data)
 

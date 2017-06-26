@@ -1,13 +1,9 @@
 {
-  "node_name": "auto",
+  "node_name": "PE Worker",
   "node_port": 8081,
-  "node_addr": "auto",
-  "master_addr": "10.42.130.68",
+  "node_addr": "192.168.0.137",
+  "master_addr": "192.168.0.137",
   "master_port": 8080,
-  "node_data_port_range": [8100, 8199],
-  "std_idle_time": 5,
-  "ext_process": [ "python2", "/home/beir/Desktop/HarmonicPE/batch.py" ],
-  "workers_num": "min",
-  "repo_addr": "127.0.0.1",
-  "repo_port": 8099
+  "node_data_port_range": [9000, 9010],
+  "std_idle_time": 5
 }

@@ -4,7 +4,8 @@ from .configuration import Setting
 from general.definition import Definition, CStatus
 from .pe_channels import PEChannels
 from .messaging_system import MessagingServices, MessagesQueue
-from .functions_list import FunctionsList
+from general.services import SysOut
+from .meta_table import LookUpTable
 
 
 class RequestStatus(object):
@@ -31,13 +32,37 @@ class RequestStatus(object):
             return
 
         if req.params[Definition.get_str_token()] == Setting.get_token():
-            result = self.get_machine_status()
-            res.body = '{ "' + Definition.get_str_node_name() + '": "' + Setting.get_node_name() + '", \
-                         "' + Definition.get_str_node_role() + '": "master", \
-                         "' + Definition.get_str_node_addr() + '": "' + Setting.get_node_addr() + '", \
-                         "' + Definition.get_str_load1() + '": ' + result[0] + ', \
-                         "' + Definition.get_str_load5() + '": ' + result[1] + ', \
-                         "' + Definition.get_str_load15() + '": ' + result[2] + ' }'
+            from general.services import Services
+            from general.definition import CRole
+
+            result = Services.get_machine_status(Setting, CRole.MASTER)
+
+            res.body = str(result)
+            res.content_type = "String"
+            res.status = falcon.HTTP_200
+        else:
+            res.body = "Invalid token ID."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+
+    def on_put(self, req, res):
+        """
+        PUT: /status?token={None}
+        """
+        if not Definition.get_str_token() in req.params:
+            res.body = "Token is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        if req.params[Definition.get_str_token()] == Setting.get_token():
+            raw = str(req.stream.read(), 'UTF-8')
+            data = eval(raw)
+
+            LookUpTable.update_worker(data)
+            SysOut.debug_string("Update worker status ({0})".format(data[Definition.get_str_node_name()]))
+
+            res.body = "Okay"
             res.content_type = "String"
             res.status = falcon.HTTP_200
         else:
@@ -52,14 +77,79 @@ class MessageStreaming(object):
 
     def on_get(self, req, res):
         """
+        return "&c_name=" + container_name + "&c_os=" + container_os + "&priority=" + str(priority)
         GET: /streamRequest?token=None
         This function is mainly respond with the available channel for streaming from data source.
         """
+
         if not Definition.get_str_token() in req.params:
             res.body = "Token is required."
             res.content_type = "String"
             res.status = falcon.HTTP_401
             return
+
+        # Check for required parameter.
+        if not Definition.Container.get_str_container_name() in req.params:
+            res.body = "Container name is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        if not Definition.Container.get_str_container_os() in req.params:
+            res.body = "Container os is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        if not Definition.Container.get_str_data_source() in req.params:
+            res.body = "Data digest is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        # parameters
+        container_name = req.params[Definition.Container.get_str_container_name()].strip()
+        container_os = req.params[Definition.Container.get_str_container_os()].strip()
+        data_source = req.params[Definition.Container.get_str_data_source()].strip()
+        digest = req.params[Definition.Container.get_str_data_digest()].strip()
+        container_priority = 0
+
+        if Definition.Container.get_str_container_priority() in req.params:
+            from general.services import Services
+            if Services.is_str_is_digit(req.params[Definition.Container.get_str_container_priority()]):
+                container_priority = int(req.params[Definition.Container.get_str_container_priority()])
+            else:
+                res.body = "Container priority is not digit."
+                res.content_type = "String"
+                res.status = falcon.HTTP_401
+                return
+
+        # Check for the availability of the container
+        ret = LookUpTable.get_candidate_container(container_name)
+
+        if ret:
+            # there is end-point available
+            pass
+        else:
+            # No streaming end-point available
+            ret = Definition.Master.get_str_end_point_MS(Setting)
+            res.body = str(ret)
+            res.content_type = "String"
+            res.status = falcon.HTTP_200
+
+
+        """
+        # Push info into request table.
+        DataStat.add_data_stat(MessagingServices.get_new_msg_id(),
+                               data_source,
+                               container_name,
+                               container_os,
+                               container_priority,
+                               digest)
+
+        SysOut.debug_string(str(DataStat.get_stat_table()))
+        
+
 
         # Check for the available channel
         channel = PEChannels.get_available_channel(group="optimize")
@@ -80,6 +170,7 @@ class MessageStreaming(object):
                 res.body = Definition.get_channel_response("0.0.0.0", 0, 0)
                 res.content_type = "String"
                 res.status = falcon.HTTP_406
+                """
 
     def on_post(self, req, res):
         """
@@ -95,7 +186,8 @@ class MessageStreaming(object):
         # Check that the PE is existing or not, if not insert and respond
         if Definition.REST.Batch.get_str_batch_addr() in req.params and \
            Definition.REST.Batch.get_str_batch_port() in req.params and \
-           Definition.REST.Batch.get_str_batch_status() in req.params:
+           Definition.REST.Batch.get_str_batch_status() in req.params and \
+           Definition.Container.get_str_container_name() in req.params:
 
             # Check for data type
             if req.params[Definition.REST.Batch.get_str_batch_port()].isdigit() and \
@@ -103,7 +195,7 @@ class MessageStreaming(object):
 
                 batch_port = int(req.params[Definition.REST.Batch.get_str_batch_port()])
                 batch_status = int(req.params[Definition.REST.Batch.get_str_batch_status()])
-                print("There are {0} messages in queue.".format(MessagesQueue.get_queue_length()))
+                SysOut.debug_string("There are {0} messages in queue.".format(MessagesQueue.get_queue_length()))
                 # If queue contain data, ignore update and stream from queue
                 if MessagesQueue.get_queue_length() > 0 and batch_status == CStatus.AVAILABLE:
                     res.data = bytes(MessagesQueue.pop_queue(0)[0])
@@ -167,83 +259,6 @@ class MessagesQuery(object):
             return
 
 
-class RegisteredFunctions(object):
-    def __init__(self):
-        pass
-
-    def on_get(self, req, res):
-        """
-        GET: /registeredFunctions?token=None&command=pull&name=value
-        This function inquiry about the number of messages in queue. For dealing with create a new instance.
-        """
-        if not Definition.get_str_token() in req.params:
-            res.body = "Token is required."
-            res.content_type = "String"
-            res.status = falcon.HTTP_401
-            return
-
-        if not Definition.RegisteredFunctions.get_str_command() in req.params:
-            res.body = "No command specified."
-            res.content_type = "String"
-            res.status = falcon.HTTP_406
-            return
-
-        if req.params[Definition.get_str_token()] == Setting.get_token():
-            print(req.params)
-            if req.params[Definition.RegisteredFunctions.get_str_command()] == Definition.RegisteredFunctions.get_str_cmd_pull() and \
-               FunctionsList.is_function_exist(req.params[Definition.RegisteredFunctions.get_str_cmd_name()]):
-                res.body = FunctionsList.get_function(req.params[Definition.RegisteredFunctions.get_str_cmd_name()])
-                res.content_type = "Bytes"
-                res.status = falcon.HTTP_203
-            elif req.params[Definition.RegisteredFunctions.get_str_command()] == Definition.RegisteredFunctions.get_str_cmd_count():
-                res.body = str(FunctionsList.total_functions())
-                res.content_type = "String"
-                res.status = falcon.HTTP_200
-            else:
-                res.body = "Invalid command!"
-                res.content_type = "String"
-                res.status = falcon.HTTP_406
-        else:
-            res.body = "Invalid token ID."
-            res.content_type = "String"
-            res.status = falcon.HTTP_401
-
-    def on_post(self, req, res):
-        """
-        POST: /registeredFunctions?token=None&command=push&name=value
-              The serialized function must be present in the post content.
-        """
-        if not Definition.get_str_token() in req.params:
-            res.body = "Token is required."
-            res.content_type = "String"
-            res.status = falcon.HTTP_401
-            return
-
-        if not Definition.RegisteredFunctions.get_str_command() in req.params:
-            res.body = "No command specified."
-            res.content_type = "String"
-            res.status = falcon.HTTP_406
-            return
-
-        if req.params[Definition.get_str_token()] == Setting.get_token():
-            print(req.params)
-
-            if req.params[Definition.RegisteredFunctions.get_str_command()] == Definition.RegisteredFunctions.get_str_cmd_push():
-                # Add function to the system
-                FunctionsList.add_function(req.params[Definition.RegisteredFunctions.get_str_cmd_name()], req.stream.read())
-                res.body = "Function " + req.params[Definition.RegisteredFunctions.get_str_cmd_name()] + " is registered."
-                res.content_type = "String"
-                res.status = falcon.HTTP_200
-            else:
-                res.body = "Function " + req.params[Definition.RegisteredFunctions.get_str_cmd_name()] + " is not registered."
-                res.content_type = "String"
-                res.status = falcon.HTTP_500
-        else:
-            res.body = "Invalid token ID."
-            res.content_type = "String"
-            res.status = falcon.HTTP_401
-
-
 class RESTService(object):
     def __init__(self):
         # Initialize REST Services
@@ -259,12 +274,10 @@ class RESTService(object):
         # Add route for msg query
         api.add_route('/' + Definition.REST.get_str_msg_query(), MessagesQuery())
 
-        # Add route for function system
-        api.add_route('/' + Definition.REST.get_str_reg_func(), RegisteredFunctions())
-
         # Establishing a REST server
         self.__server = make_server(Setting.get_node_addr(), Setting.get_node_port(), api)
 
     def run(self):
-        print("REST Ready.....\n\n")
+        SysOut.out_string("REST Ready.....")
+
         self.__server.serve_forever()

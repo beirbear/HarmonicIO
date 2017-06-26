@@ -1,22 +1,83 @@
 import falcon
-import subprocess
 from .configuration import Setting
-from general.definition import Definition
+from general.services import SysOut, Services
+from .docker_service import DockerService
+from general.definition import Definition, CRole
+
+
+class ContainerService(object):
+    def __init__(self):
+        pass
+
+    def on_get(self, req, res):
+        """
+        GET: docker?token=None&command={command}
+        """
+        if not Definition.get_str_token() in req.params:
+            res.body = "Token is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        if not Definition.Docker.get_str_command() in req.params:
+            res.body = "Command is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        # Check for status command
+        if req.params[Definition.Docker.get_str_command()] == Definition.Docker.get_str_status():
+            body = DockerService.get_containers_status()
+            res.body = str(body)
+            res.content_type = "String"
+            res.status = falcon.HTTP_200
+
+    def on_post(self, req, res):
+        """
+        POST: docker?token=None&command={command}
+        """
+        if not Definition.get_str_token() in req.params:
+            res.body = "Token is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        if not Definition.Docker.get_str_command() in req.params:
+            res.body = "Command is required."
+            res.content_type = "String"
+            res.status = falcon.HTTP_401
+            return
+
+        """
+        POST: docker?token=None&command=create
+        """
+        if req.params[Definition.Docker.get_str_command()] == Definition.Docker.get_str_create():
+            # Unpack the posted data
+            raw = str(req.stream.read(), 'UTF-8')
+            data = eval(raw)
+
+            if not data[Definition.Container.get_str_container_name()]:
+                res.body = "Required parameters are not supplied!"
+                res.content_type = "String"
+                res.status = falcon.HTTP_401
+
+            result = DockerService.create_container(data[Definition.Container.get_str_container_name()])
+
+            if result:
+                res.body = "Okay"
+                res.content_type = "String"
+                res.status = falcon.HTTP_200
+                return
+            else:
+                res.body = "Create container error!"
+                res.content_type = "String"
+                res.status = falcon.HTTP_400
 
 
 class RequestStatus(object):
-    def __init__(self):
+    def __init__(self, docker):
         # No commander is needed for binding this task
-        pass
-
-    def get_machine_status(self):
-        """
-        Get machine status by calling a unix command and fetch for load average
-        """
-        res = str(subprocess.check_output(Definition.get_cpu_load_command())).strip()
-        res = res.replace(",", "").replace("\\n", "").replace("'", "")
-        *_, load1, load5, load15 = res.split(" ")
-        return load1, load5, load15
+        self.__docker = docker
 
     def on_get(self, req, res):
         """
@@ -29,13 +90,11 @@ class RequestStatus(object):
             return
 
         if req.params[Definition.get_str_token()] == Setting.get_token():
-            result = self.get_machine_status()
-            res.body = '{ "' + Definition.get_str_node_name() + '": "' + Setting.get_node_name() + '", \
-                         "' + Definition.get_str_node_role() + '": "worker", \
-                         "' + Definition.get_str_node_addr() + '": "' + Setting.get_node_addr() + '", \
-                         "' + Definition.get_str_load1() + '": ' + result[0] + ', \
-                         "' + Definition.get_str_load5() + '": ' + result[1] + ', \
-                         "' + Definition.get_str_load15() + '": ' + result[2] + ' }'
+            s_content = Services.get_machine_status(Setting, CRole.WORKER)
+            s_content[Definition.REST.get_str_docker()] = self.__docker.get_containers_status()
+
+            res.body = str(s_content)
+
             res.content_type = "String"
             res.status = falcon.HTTP_200
         else:
@@ -53,9 +112,12 @@ class RESTService(object):
         # Add route for getting status update
         api.add_route('/' + Definition.REST.get_str_status(), RequestStatus())
 
+        # Add route for docker
+        api.add_route('/' + Definition.REST.get_str_docker(), ContainerService())
+
         # Establishing a REST server
         self.__server = make_server(Setting.get_node_addr(), Setting.get_node_port(), api)
 
     def run(self):
-        print("REST Ready.....\n\n")
+        SysOut.out_string("REST Ready.....")
         self.__server.serve_forever()
