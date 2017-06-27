@@ -32,9 +32,13 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
                 c = self.request.recv(2048)
                 data += c
 
-            print(str(data[0:128], 'UTF-8'))
+            # Extract byte header 3 bytes
+            image_name_length = int(data[0:3].decode('UTF-8'))
+            tcr = image_name_length + 3
+            image_name_string = data[3:tcr].decode('UTF-8')
+
             # Then, push data messaging system.
-            MessagesQueue.push_to_queue(data)
+            MessagesQueue.push_to_queue(image_name_string, data[tcr:])
 
         except:
             from general.services import Services

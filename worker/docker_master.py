@@ -79,7 +79,7 @@ class DockerMaster(object):
             ret[Definition.Docker.HDE.get_str_node_addr()] = Setting.get_node_addr()
             ret[Definition.Docker.HDE.get_str_node_data_port()] = expose
             ret[Definition.Docker.HDE.get_str_node_forward_port()] = a_port
-            ret[Definition.Docker.HDE.get_str_master_addr()] = Setting.get_master_port()
+            ret[Definition.Docker.HDE.get_str_master_addr()] = Setting.get_master_addr()
             ret[Definition.Docker.HDE.get_str_master_port()] = Setting.get_master_port()
             ret[Definition.Docker.HDE.get_str_std_idle_time()] = Setting.get_std_idle_time()
             ret[Definition.Docker.HDE.get_str_token()] = Setting.get_token()
@@ -94,12 +94,18 @@ class DockerMaster(object):
             return False
         else:
             SysOut.debug_string("Expose port: " + str(port))
+            SysOut.debug_string("Container_name: " + container_name)
+            SysOut.debug_string("Ports: " + str(get_ports_setting(expose_port, port)))
+            SysOut.debug_string("ENV: " + str(get_env_setting(expose_port, port)))
+
             res = self.__client.containers.run(container_name,
+                                               detach=True,
                                                ports=get_ports_setting(expose_port, port),
                                                environment=get_env_setting(expose_port, port))
 
             if res:
+                SysOut.out_string("Container " + container_name + " is created!")
                 return True
             else:
-                SysOut.err_string("Container " + container_name + " cannot be created!")
+                SysOut.out_string("Container " + container_name + " cannot be created!")
                 return False

@@ -75,9 +75,9 @@ class ContainerService(object):
 
 
 class RequestStatus(object):
-    def __init__(self, docker):
+    def __init__(self):
         # No commander is needed for binding this task
-        self.__docker = docker
+        pass
 
     def on_get(self, req, res):
         """
@@ -91,7 +91,7 @@ class RequestStatus(object):
 
         if req.params[Definition.get_str_token()] == Setting.get_token():
             s_content = Services.get_machine_status(Setting, CRole.WORKER)
-            s_content[Definition.REST.get_str_docker()] = self.__docker.get_containers_status()
+            s_content[Definition.REST.get_str_docker()] = DockerService.get_containers_status()
 
             res.body = str(s_content)
 

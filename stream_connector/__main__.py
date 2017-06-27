@@ -74,6 +74,7 @@ if __name__ == '__main__':
 
     # Stream according to the random order
     for _, obj_type in stream_order:
+
         d_container = sc.get_data_contaner()
 
         # Assign data to container

@@ -1,25 +1,16 @@
 import falcon
-import subprocess
 from .configuration import Setting
 from general.definition import Definition, CStatus
 from .pe_channels import PEChannels
-from .messaging_system import MessagingServices, MessagesQueue
+from .messaging_system import MessagesQueue
 from general.services import SysOut
 from .meta_table import LookUpTable
 
 
 class RequestStatus(object):
+
     def __init__(self):
         pass
-
-    def get_machine_status(self):
-        """
-        Get machine status by calling a unix command and fetch for load average
-        """
-        res = str(subprocess.check_output(Definition.get_cpu_load_command())).strip()
-        res = res.replace(",", "").replace("\\n", "").replace("'", "")
-        *_, load1, load5, load15 = res.split(" ")
-        return load1, load5, load15
 
     def on_get(self, req, res):
         """
@@ -128,8 +119,10 @@ class MessageStreaming(object):
         ret = LookUpTable.get_candidate_container(container_name)
 
         if ret:
-            # there is end-point available
-            pass
+            # res.body = Definition.Master.get_str_end_point(ret[D])
+            res.body = "just a moment"
+            res.content_type = "String"
+            res.status = falcon.HTTP_200
         else:
             # No streaming end-point available
             ret = Definition.Master.get_str_end_point_MS(Setting)
@@ -175,7 +168,8 @@ class MessageStreaming(object):
     def on_post(self, req, res):
         """
         POST: /streamRequest?token=None
-        This function respond with getting a stream from data source or from messaging system.
+        This function invoked by the driver in micro-batch in the container.
+        It responds with getting a stream from data source or from messaging system.
         """
         if not Definition.get_str_token() in req.params:
             res.body = "Token is required."
@@ -195,16 +189,40 @@ class MessageStreaming(object):
 
                 batch_port = int(req.params[Definition.REST.Batch.get_str_batch_port()])
                 batch_status = int(req.params[Definition.REST.Batch.get_str_batch_status()])
-                SysOut.debug_string("There are {0} messages in queue.".format(MessagesQueue.get_queue_length()))
+                image_name = req.params[Definition.Container.get_str_container_name()].strip()
+
                 # If queue contain data, ignore update and stream from queue
-                if MessagesQueue.get_queue_length() > 0 and batch_status == CStatus.AVAILABLE:
-                    res.data = bytes(MessagesQueue.pop_queue(0)[0])
+                length = MessagesQueue.get_queues_length(image_name)
+                SysOut.warn_string("image_name: " + image_name)
+                SysOut.warn_string("length: " + str(length))
+                SysOut.warn_string("batch_status: " + str(batch_status))
+                SysOut.warn_string("CStatus: " + str(CStatus.AVAILABLE))
+
+                if not length:
+                    """
+                    1.) No item in queue.
+                    2.) Flag the container status to available in the LookUpTable
+                    """
+                    SysOut.debug_string("No item in queue!")
+                    res.body = "No item in queue"
+                    res.content_type = "String"
+                    res.status = falcon.HTTP_200
+                    return
+
+                """
+                1.) Item in queue
+                2.) Get item for specific container
+                3.) Respond with content from the LookUpTable, and do not remain flag the container to busy.
+                """
+
+                if length > 0 and batch_status == CStatus.AVAILABLE:
+                    res.data = bytes(MessagesQueue.pop_queue(image_name))
                     res.content_type = "Bytes"
                     res.status = falcon.HTTP_203
                 else:
                     # Register channel
-                    PEChannels.register_channel(req.params[Definition.REST.Batch.get_str_batch_addr()],
-                                                batch_port, batch_status)
+                    # PEChannels.register_channel(req.params[Definition.REST.Batch.get_str_batch_addr()],
+                    #                             batch_port, batch_status)
                     res.body = "OK"
                     res.content_type = "String"
                     res.status = falcon.HTTP_200
@@ -241,19 +259,13 @@ class MessagesQuery(object):
             return
 
         if req.params[Definition.MessagesQueue.get_str_command()] == Definition.MessagesQueue.get_str_queue_length():
-            res.body = str(MessagesQueue.get_queue_length())
+            res.body = str(MessagesQueue.get_queues_all())
             res.content_type = "String"
             res.status = falcon.HTTP_200
             return
 
         if req.params[Definition.MessagesQueue.get_str_command()] == Definition.MessagesQueue.get_str_current_id():
-            res.body = str(MessagingServices.get_current_id())
-            res.content_type = "String"
-            res.status = falcon.HTTP_200
-            return
-
-        if req.params[Definition.MessagesQueue.get_str_command()] == Definition.ChannelStatus.get_str_pe_status():
-            res.body = str(PEChannels.view_available_channel())
+            res.body = "None"
             res.content_type = "String"
             res.status = falcon.HTTP_200
             return

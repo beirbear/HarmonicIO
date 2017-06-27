@@ -1,7 +1,6 @@
 """
 Worker entry point.
 """
-
 import threading
 import urllib3
 from .configuration import Setting
@@ -22,6 +21,7 @@ def update_worker_status():
     """
     Update the worker status to the master as well as container info.
     """
+
     threading.Timer(30, update_worker_status).start()
     """
     Get machine status by calling a unix command and fetch for load average
@@ -42,7 +42,6 @@ def update_worker_status():
 
     except:
         SysOut.err_string("Master is not available!")
-
 
 
 if __name__ == "__main__":
@@ -78,5 +77,4 @@ if __name__ == "__main__":
     pool.submit(run_rest_service)
 
     # Update the worker status
-    update_worker_status()
-
+    # pool.submit(update_worker_status)

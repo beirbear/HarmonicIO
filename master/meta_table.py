@@ -48,7 +48,7 @@ class LookUpTable(object):
 
         @staticmethod
         def get_candidate_container(image_name):
-            if not image_name in LookUpTable.Containers.__containers:
+            if image_name not in LookUpTable.Containers.__containers:
                 return None
 
             return LookUpTable.Containers.__containers[image_name].get()

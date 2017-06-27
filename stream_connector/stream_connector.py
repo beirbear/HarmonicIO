@@ -203,12 +203,18 @@ class StreamConnector(object):
                 SysOut.warn_string("Cannot connect to " + t_addr + ":" + str(t_port) + "!")
                 return False
 
-            c_header = bytearray(128)
-            c_header += image_name
+            # Generate header string
+            image_name_b = bytes(image_name, 'UTF-8')
+            image_name_l = str(len(image_name_b))
+
+            while len(image_name_l) < 3:
+                image_name_l = "0" + image_name_l
+
+            image_name_t = bytes(image_name_l, 'UTF-8') + image_name_b
 
             with s:
                 # Identifying object id
-                s.sendall(c_header)
+                s.sendall(image_name_t)
                 s.sendall(data)
                 s.sendall(b'')
                 s.close()
