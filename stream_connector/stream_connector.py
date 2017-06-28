@@ -129,7 +129,6 @@ class StreamConnector(object):
 
         try:
             content = eval(response.data.decode('utf-8'))
-
             return content
 
         except:
@@ -271,12 +270,17 @@ class StreamConnector(object):
             return False
 
         if end_point[Definition.get_str_node_role()] == CRole.WORKER:
-            SysOut.out_string("Push data to Worker (" + end_point[Definition.get_str_node_addr()] + ":" + str(end_point[Definition.get_str_node_port()]) + ") successful.")
+            SysOut.out_string("Push data to worker ({0}:{1}>{2}) successful.".format(end_point[Definition.get_str_node_addr()],
+                                                                                     end_point[Definition.get_str_node_port()],
+                                                                                     container_name))
         elif end_point[Definition.get_str_node_role()] == CRole.MESSAGING_SYSTEM:
-            SysOut.out_string("Push data to Messaging System (" + end_point[Definition.get_str_node_addr()] + ":" + str(end_point[Definition.get_str_node_port()]) + ") successful.")
+            SysOut.out_string("Push data to messaging system ({0}:{1}>{2}) successful.".format(end_point[Definition.get_str_node_addr()],
+                                                                                               end_point[Definition.get_str_node_port()],
+                                                                                               container_name))
         else:
-            SysOut.out_string("Push data to unknown target (" + end_point[Definition.get_str_node_addr()] + ":" + str(end_point[Definition.get_str_node_port()]) + ") successful.")
-
+            SysOut.out_string("Push data to unknown ({0}:{1}>{2}) successful.".format(end_point[Definition.get_str_node_addr()],
+                                                                                      end_point[Definition.get_str_node_port()],
+                                                                                      container_name))
 
     def get_data_contaner(self):
         # Can be override to byte array with pre-defined header.

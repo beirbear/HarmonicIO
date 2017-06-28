@@ -15,13 +15,13 @@ PROCC_DATA = {
 }
 
 SETTING = {
-    "IDLE_TIME": 5,
+    "IDLE_TIME": 30,
     "MAX_TRY":   3,
     "TOKEN": "None",
     "SOURCE_NAME": "demo_program"
 }
 
-ITEM_NUMBER = 1
+ITEM_NUMBER = 10
 
 
 def get_random_data():
@@ -80,7 +80,6 @@ if __name__ == '__main__':
         # Assign data to container
         d_container += d_list[obj_type]
 
-        SysOut.debug_string("Streaming data to target image> " + obj_type)
         sc.send_data(PROCC_DATA[obj_type], PROCC_DATA["OS"], d_container)
 
     SysOut.out_string("Finish!")

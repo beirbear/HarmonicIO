@@ -72,6 +72,14 @@ class MessagesQueue(object):
         SysOut.debug_string(tmp)
 
     @staticmethod
+    def verbose():
+        ret = dict()
+        for key, value in MessagesQueue.__msg_queue.items():
+            ret[key] = len(value)
+
+        return ret
+
+    @staticmethod
     async def stream_to_batch(c_addr, c_port, image_name):
 
         data = MessagesQueue.pop_queue(image_name)

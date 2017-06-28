@@ -93,10 +93,6 @@ class DockerMaster(object):
             SysOut.err_string("No more port available!")
             return False
         else:
-            SysOut.debug_string("Expose port: " + str(port))
-            SysOut.debug_string("Container_name: " + container_name)
-            SysOut.debug_string("Ports: " + str(get_ports_setting(expose_port, port)))
-            SysOut.debug_string("ENV: " + str(get_env_setting(expose_port, port)))
 
             res = self.__client.containers.run(container_name,
                                                detach=True,

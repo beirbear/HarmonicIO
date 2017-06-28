@@ -22,7 +22,7 @@ def update_worker_status():
     Update the worker status to the master as well as container info.
     """
 
-    threading.Timer(30, update_worker_status).start()
+    threading.Timer(5, update_worker_status).start()
     """
     Get machine status by calling a unix command and fetch for load average
     """
@@ -77,4 +77,4 @@ if __name__ == "__main__":
     pool.submit(run_rest_service)
 
     # Update the worker status
-    # pool.submit(update_worker_status)
+    pool.submit(update_worker_status)

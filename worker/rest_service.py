@@ -56,12 +56,12 @@ class ContainerService(object):
             raw = str(req.stream.read(), 'UTF-8')
             data = eval(raw)
 
-            if not data[Definition.Container.get_str_container_name()]:
+            if not data[Definition.Container.get_str_con_image_name()]:
                 res.body = "Required parameters are not supplied!"
                 res.content_type = "String"
                 res.status = falcon.HTTP_401
 
-            result = DockerService.create_container(data[Definition.Container.get_str_container_name()])
+            result = DockerService.create_container(data[Definition.Container.get_str_con_image_name()])
 
             if result:
                 res.body = "Okay"

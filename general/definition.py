@@ -16,6 +16,13 @@ class CRole:
     MESSAGING_SYSTEM = 4
 
 
+class CTuple:
+    SC = 0
+    MS = 1
+    WK = 2
+    RT = 3
+
+
 class Definition(object):
     @staticmethod
     def get_str_node_name():
@@ -124,27 +131,29 @@ class Definition(object):
 
         @staticmethod
         def get_str_push_req_container_ext(container_name, container_os, priority, source_name, digest):
-            return  "&" + Definition.Container.get_str_container_name() + "=" + container_name + \
+            return  "&" + Definition.Container.get_str_con_image_name() + "=" + container_name + \
                     "&" + Definition.Container.get_str_container_os() + "=" + container_os + \
                     "&" + Definition.Container.get_str_container_priority() + "=" + str(priority) + \
                     "&" + Definition.Container.get_str_data_source() + "=" + source_name + \
                     "&" + Definition.Container.get_str_data_digest() + "=" + digest
 
         @staticmethod
-        def get_str_end_point(node_addr, node_port, role, master_subcommand=list()):
+        def get_str_end_point(ret, sc=list()):
             response = dict()
-            response[Definition.get_str_node_addr()] = node_addr
-            response[Definition.get_str_node_port()] = node_port
-            response[Definition.get_str_node_role()] = role
-            response[Definition.Master.DataLog.get_str_data_cmd()] = master_subcommand
+            response[Definition.get_str_node_addr()] = ret[Definition.REST.Batch.get_str_batch_addr()]
+            response[Definition.get_str_node_port()] = ret[Definition.REST.Batch.get_str_batch_port()]
+            response[Definition.get_str_node_role()] = CRole.WORKER
+            response[Definition.Master.DataLog.get_str_data_cmd()] = sc
             return str(response)
 
         @staticmethod
-        def get_str_end_point_MS(setting, sc=None):
-            return Definition.Master.get_str_end_point(setting.get_node_addr(),
-                                                       setting.get_data_port_start(),
-                                                       CRole.MESSAGING_SYSTEM,
-                                                       master_subcommand=sc)
+        def get_str_end_point_MS(setting, sc=list()):
+            response = dict()
+            response[Definition.get_str_node_addr()] = setting.get_node_addr()
+            response[Definition.get_str_node_port()] = setting.get_data_port_start()
+            response[Definition.get_str_node_role()] = CRole.MESSAGING_SYSTEM
+            response[Definition.Master.DataLog.get_str_data_cmd()] = sc
+            return str(response)
 
     class REST(object):
         @staticmethod
@@ -205,7 +214,7 @@ class Definition(object):
 
     class Container(object):
         @staticmethod
-        def get_str_container_name():
+        def get_str_con_image_name():
             return "c_name"
 
         @staticmethod
