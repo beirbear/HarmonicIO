@@ -46,6 +46,13 @@ class Setting(object):
         return Setting.__node_external_addr
 
     @staticmethod
+    def get_node_addr():
+        if Setting.__node_external_addr:
+            return Setting.__node_external_addr
+
+        return Setting.__node_internal_addr
+
+    @staticmethod
     def get_node_port():
         return Setting.__node_port
 

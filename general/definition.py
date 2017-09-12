@@ -41,6 +41,10 @@ class Definition(object):
         return "node_external_addr"
 
     @staticmethod
+    def get_str_node_addr():
+        return "node_addr"
+
+    @staticmethod
     def get_str_node_port():
         return "node_port"
 
