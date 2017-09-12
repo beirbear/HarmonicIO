@@ -8,7 +8,8 @@ setup(name='harmonicIO',
           'console_scripts': [
               'stream_connector = stream_connector.__main__:main',
               'master = master.__main__:main',
-              'worker = worker.__main__:main'
+              'worker = worker.__main__:main',
+              'play = play.__main__:main'
           ]
       }
       )

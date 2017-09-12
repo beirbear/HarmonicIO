@@ -1,16 +1,10 @@
 #!/bin/bash
 
 sudo apt-get update
-sudo apt-get upgrade
+sudo apt-get -y upgrade
 
 sudo apt-get update
-sudo apt-get upgrade
-
-# Install Python3.5
-echo "Install python 3.5"
-sudo add-apt-repository ppa:fkrull/deadsnakes
-sudo apt-get update
-sudo apt-get install python3.5
+sudo apt-get -y upgrade
 
 # Install setup tool
 echo "Install setup tool"

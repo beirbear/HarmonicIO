@@ -11,6 +11,7 @@ class Setting(object):
     __token = "None"
     __master_addr = None
     __master_port = None
+    __node_external_addr = None
 
 
     @staticmethod
@@ -74,6 +75,10 @@ class Setting(object):
         return 1
 
     @staticmethod
+    def get_node_external_addr():
+        return Setting.__node_external_addr
+
+    @staticmethod
     def read_cfg_from_file():
         from general.services import Services
         if not Services.is_file_exist('worker/configuration.json'):
@@ -119,6 +124,7 @@ class Setting(object):
                             Setting.__std_idle_time = cfg[Definition.get_str_idle_time()]
                             Setting.__master_addr = cfg[Definition.get_str_master_addr()].strip()
                             Setting.__master_port = cfg[Definition.get_str_master_port()]
+                            Setting.__node_external_addr = cfg["node_external_addr"].strip()
 
                             # Check for auto node name
                             if Setting.__node_name.lower() == "auto":

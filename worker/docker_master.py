@@ -76,7 +76,7 @@ class DockerMaster(object):
         def get_env_setting(expose, a_port):
             ret = dict()
             ret[Definition.Docker.HDE.get_str_node_name()] = container_name
-            ret[Definition.Docker.HDE.get_str_node_addr()] = Setting.get_node_addr()
+            ret[Definition.Docker.HDE.get_str_node_addr()] = Setting.get_node_external_addr()
             ret[Definition.Docker.HDE.get_str_node_data_port()] = expose
             ret[Definition.Docker.HDE.get_str_node_forward_port()] = a_port
             ret[Definition.Docker.HDE.get_str_master_addr()] = Setting.get_master_addr()
