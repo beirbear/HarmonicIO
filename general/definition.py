@@ -33,8 +33,12 @@ class Definition(object):
         return "node_role"
 
     @staticmethod
-    def get_str_node_addr():
-        return "node_addr"
+    def get_str_node_internal_addr():
+        return "node_internal_addr"
+
+    @staticmethod
+    def get_str_node_external_addr():
+        return "node_external_addr"
 
     @staticmethod
     def get_str_node_port():

@@ -58,7 +58,9 @@ if __name__ == "__main__":
 
     # Print instance information
     SysOut.out_string("Node name: " + Setting.get_node_name())
-    SysOut.out_string("Node address: " + Setting.get_node_addr())
+    SysOut.out_string("Node internal address: " + Setting.get_node_internal_addr())
+    if Setting.get_node_external_addr():
+        SysOut.out_string("Node external address: " + Setting.get_node_external_addr())
     SysOut.out_string("Node port: " + str(Setting.get_node_port()))
     SysOut.out_string("Port range: {0} to {1} ({2} ports available)".format(Setting.get_data_port_start(),
                                                                  Setting.get_data_port_stop(),

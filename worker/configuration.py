@@ -3,7 +3,6 @@ from general.services import SysOut
 
 class Setting(object):
     __node_name = None
-    __node_addr = None
     __node_port = None
     __node_data_port_start = None
     __node_data_port_stop = None
@@ -12,7 +11,7 @@ class Setting(object):
     __master_addr = None
     __master_port = None
     __node_external_addr = None
-
+    __node_internal_addr = None
 
     @staticmethod
     def set_node_addr(addr=None):
@@ -39,8 +38,12 @@ class Setting(object):
         return Setting.__node_name
 
     @staticmethod
-    def get_node_addr():
-        return Setting.__node_addr
+    def get_node_internal_addr():
+        return Setting.__node_internal_addr
+
+    @staticmethod
+    def get_node_external_addr():
+        return Setting.__node_external_addr
 
     @staticmethod
     def get_node_port():
@@ -96,7 +99,9 @@ class Setting(object):
                         Definition.get_str_data_port_range() in cfg and \
                         Definition.get_str_idle_time() in cfg and \
                         Definition.get_str_master_addr() in cfg and \
-                        Definition.get_str_master_port() in cfg:
+                        Definition.get_str_master_port() in cfg and \
+                        Definition.get_str_node_external_addr() in cfg and \
+                        Definition.get_str_node_internal_addr():
                         # Check port number is int or not
                         if not isinstance(cfg[Definition.get_str_node_port()], int):
                             SysOut.terminate_string("Node port must be integer.")
@@ -124,7 +129,7 @@ class Setting(object):
                             Setting.__std_idle_time = cfg[Definition.get_str_idle_time()]
                             Setting.__master_addr = cfg[Definition.get_str_master_addr()].strip()
                             Setting.__master_port = cfg[Definition.get_str_master_port()]
-                            Setting.__node_external_addr = cfg["node_external_addr"].strip()
+                            Setting.__node_external_addr = cfg[Definition.get_str_node_external_addr()].strip().lower()
 
                             # Check for auto node name
                             if Setting.__node_name.lower() == "auto":
@@ -133,12 +138,26 @@ class Setting(object):
                                 Setting.__node_name = socket.gethostname()
 
                             # Check for overriding node address
-                            if cfg["node_addr"] and cfg["node_addr"] != "auto":
+                            if cfg[Definition.get_str_node_internal_addr()] and \
+                               cfg[Definition.get_str_node_internal_addr()] != "auto":
                                 # Set node name automatically from hostname
                                 from general.services import Services
 
-                                if Services.is_valid_ipv4(cfg["node_addr"]) or Services.is_valid_ipv6(cfg["node_addr"]):
-                                    Setting.__node_addr = cfg["node_addr"]
+                                if Services.is_valid_ipv4(cfg[Definition.get_str_node_internal_addr()]) or \
+                                   Services.is_valid_ipv6(cfg[Definition.get_str_node_internal_addr()]):
+                                    Setting.__node_internal_addr = cfg[Definition.get_str_node_internal_addr()]
+
+                            # Check for node address validity
+                            if Setting.get_node_external_addr() != "none":
+                                from general.services import Services
+
+                                if Services.is_valid_ipv4(Setting.get_node_external_addr()) or \
+                                   Services.is_valid_ipv6(Setting.get_node_external_addr()):
+                                    SysOut.out_string("By pass request with external address.")
+                                else:
+                                    SysOut.terminate_string("Invaliid external ip address!")
+                            else:
+                                Setting.__node_external_addr = None
 
                             SysOut.out_string("Load setting successful.")
                     else:

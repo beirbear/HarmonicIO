@@ -116,7 +116,7 @@ class RESTService(object):
         api.add_route('/' + Definition.REST.get_str_docker(), ContainerService())
 
         # Establishing a REST server
-        self.__server = make_server(Setting.get_node_addr(), Setting.get_node_port(), api)
+        self.__server = make_server(Setting.get_node_internal_addr(), Setting.get_node_port(), api)
 
     def run(self):
         SysOut.out_string("REST Ready.....")
