@@ -41,5 +41,5 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
             MessagesQueue.push_to_queue(image_name_string, data[tcr:])
 
         except:
-            from general.services import Services
+            from harmonicIO.general.services import Services
             Services.e_print("Insufficient memory for storing g object.")

@@ -1,8 +1,8 @@
 import socket
 import docker
 from .configuration import Setting
-from general.definition import CStatus, Definition
-from general.services import SysOut
+from harmonicIO.general.definition import CStatus, Definition
+from harmonicIO.general.services import SysOut
 
 
 class ChannelStatus(object):

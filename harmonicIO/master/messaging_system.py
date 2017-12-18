@@ -1,6 +1,6 @@
 import socket
 from concurrent.futures import ProcessPoolExecutor
-from general.services import SysOut
+from harmonicIO.general.services import SysOut
 
 
 class MessagingConfiguration(object):

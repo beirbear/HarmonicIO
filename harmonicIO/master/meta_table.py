@@ -1,6 +1,6 @@
 import queue
-from general.services import Services, SysOut
-from general.definition import Definition, CTuple
+from harmonicIO.general.services import Services
+from harmonicIO.general.definition import Definition, CTuple
 
 
 class DataStatStatus(object):

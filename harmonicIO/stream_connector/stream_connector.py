@@ -5,8 +5,8 @@ import urllib3
 import time
 import socket
 import hashlib
-from general.services import SysOut, Services
-from general.definition import Definition, CRole
+from harmonicIO.general.services import SysOut, Services
+from harmonicIO.general.definition import Definition, CRole
 
 
 class LocalError(object):
@@ -72,7 +72,7 @@ class StreamConnector(object):
             self.__source_name = socket.gethostname()
 
         # Connection string
-        from general.definition import Definition
+        from harmonicIO.general.definition import Definition
 
         self.__str_master_status = Definition.Master.get_str_check_master(server_addr, server_port, "None")
         self.__str_push_request = Definition.Master.get_str_push_req(server_addr, server_port, "None")

@@ -5,7 +5,7 @@ import threading
 import urllib3
 from .configuration import Setting
 from general.services import SysOut, Services
-from general.definition import Definition, CRole
+from harmonicIO.general.definition import Definition, CRole
 
 
 def run_rest_service():

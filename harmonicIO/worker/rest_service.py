@@ -1,8 +1,8 @@
 import falcon
 from .configuration import Setting
-from general.services import SysOut, Services
+from harmonicIO.general.services import SysOut, Services
 from .docker_service import DockerService
-from general.definition import Definition, CRole
+from harmonicIO.general.definition import Definition, CRole
 
 
 class ContainerService(object):

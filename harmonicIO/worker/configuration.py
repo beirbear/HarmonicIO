@@ -1,4 +1,4 @@
-from general.services import SysOut
+from harmonicIO.general.services import SysOut
 
 
 class Setting(object):
@@ -19,7 +19,7 @@ class Setting(object):
             Setting.__node_addr = addr
         else:
             import socket
-            from general.services import Services
+            from harmonicIO.general.services import Services
             Setting.__node_addr = socket.gethostname()
 
             # if addr is valid
@@ -90,7 +90,7 @@ class Setting(object):
 
     @staticmethod
     def read_cfg_from_file():
-        from general.services import Services
+        from harmonicIO.general.services import Services
         if not Services.is_file_exist('worker/configuration.json'):
             SysOut.terminate_string('worker/configuration.json does not exist')
         else:
@@ -99,7 +99,7 @@ class Setting(object):
                 cfg = json.loads(t.read())
 
                 try:
-                    from general.definition import Definition
+                    from harmonicIO.general.definition import Definition
                     # Check for the json structure
                     if  Definition.get_str_node_name() in cfg and \
                         Definition.get_str_node_port() in cfg and \
@@ -148,7 +148,7 @@ class Setting(object):
                             if cfg[Definition.get_str_node_internal_addr()] and \
                                cfg[Definition.get_str_node_internal_addr()] != "auto":
                                 # Set node name automatically from hostname
-                                from general.services import Services
+                                from harmonicIO.general.services import Services
 
                                 if Services.is_valid_ipv4(cfg[Definition.get_str_node_internal_addr()]) or \
                                    Services.is_valid_ipv6(cfg[Definition.get_str_node_internal_addr()]):
@@ -156,7 +156,7 @@ class Setting(object):
 
                             # Check for node address validity
                             if Setting.get_node_external_addr() != "none":
-                                from general.services import Services
+                                from harmonicIO.general.services import Services
 
                                 if Services.is_valid_ipv4(Setting.get_node_external_addr()) or \
                                    Services.is_valid_ipv6(Setting.get_node_external_addr()):

@@ -1,5 +1,5 @@
 from .stream_connector import StreamConnector
-from general.services import SysOut
+from harmonicIO.general.services import SysOut
 
 # Example program
 # The use case number can be defined by varying the number in use case variable

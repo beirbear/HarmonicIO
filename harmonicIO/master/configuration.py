@@ -1,4 +1,4 @@
-from general.services import SysOut
+from harmonicIO.general.services import SysOut
 
 
 class Setting(object):
@@ -16,7 +16,7 @@ class Setting(object):
             Setting.__node_addr = addr
         else:
             import socket
-            from general.services import Services
+            from harmonicIO.general.services import Services
             Setting.__node_addr = socket.gethostname()
             SysOut.debug_string(Setting.__node_addr)
             # if addr is valid
@@ -60,7 +60,7 @@ class Setting(object):
 
     @staticmethod
     def read_cfg_from_file():
-        from general.services import Services, SysOut
+        from harmonicIO.general.services import Services, SysOut
         if not Services.is_file_exist('master/configuration.json'):
             SysOut.terminate_string('master/configuration.json does not exist!')
         else:
@@ -69,7 +69,7 @@ class Setting(object):
                 cfg = json.loads(t.read())
 
                 try:
-                    from general.definition import Definition
+                    from harmonicIO.general.definition import Definition
                     # Check for the json structure
                     if  Definition.get_str_node_name() in cfg and \
                         Definition.get_str_node_port() in cfg and \
