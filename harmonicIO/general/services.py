@@ -1,6 +1,6 @@
 import os.path
 import subprocess
-from colors import red, green, yellow, blue
+from .colors import red, green, yellow, blue
 from .definition import Definition, CRole
 
 

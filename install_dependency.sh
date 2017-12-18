@@ -11,10 +11,11 @@ echo "Install setup tool"
 wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python3.5
 
 # Install Colors
-echo "Install Color"
-git clone https://github.com/verigak/colors.git
-cd color
-sudo python3.5 setup.py install
+# disable this - only dep needed for stream_connector
+#echo "Install Color"
+#git clone https://github.com/verigak/colors.git
+#cd color
+#sudo python3.5 setup.py install
 
 # Install REST framework (Falcon)
 echo "Install REST framework (Falcon)"
