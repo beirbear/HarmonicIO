@@ -109,6 +109,9 @@ class StreamConnector(object):
         try:
 
             response = self.__connector.request('GET', self.__str_push_request + Definition.Master.get_str_push_req_container_ext(container_name, container_os, priority, self.__source_name, digest))
+            #print(response.body)
+            #print(response.status)
+            #print(response.text)
 
             if response.status == 406:
                 # Messages in queue is full. Result in queue lock.
@@ -120,9 +123,11 @@ class StreamConnector(object):
                 return False
 
             elif response.status != 200:
+                SysOut.warn_string("something else went wrong")
                 return False
 
-        except:
+        except Exception as ex:
+            print(ex)
             SysOut.err_string("Couldn't connect to the master at {0}:{1}.".format(self.__master_addr,
                                                                                   self.__master_port))
             return False
@@ -150,11 +155,13 @@ class StreamConnector(object):
                 try:
                     s = socket.socket(af, socktype, proto)
                 except OSError as msg:
+                    print(msg)
                     s = None
                     continue
                 try:
                     s.connect(sa)
                 except OSError as msg:
+                    print(msg)
                     s.close()
                     s = None
                     continue
@@ -189,11 +196,13 @@ class StreamConnector(object):
                 try:
                     s = socket.socket(af, socktype, proto)
                 except OSError as msg:
+                    print(msg)
                     s = None
                     continue
                 try:
                     s.connect(sa)
                 except OSError as msg:
+                    print(msg)
                     s.close()
                     s = None
                     continue
@@ -224,6 +233,7 @@ class StreamConnector(object):
             SysOut.warn_string("Cannot stream data to an end point!")
 
     def send_data(self, container_name, container_os, data, priority=None):
+        print('send_data B')
         # The data must be byte array
         if not isinstance(data, bytearray):
             LocalError.err_invalid_data_container_type()
@@ -245,6 +255,8 @@ class StreamConnector(object):
                 SysOut.err_string("Cannot contact server. Exceed maximum retry {0}!".format(self.__max_try))
                 return False
 
+
+        print('send_data A')
         counter = self.__max_try
         if end_point[Definition.get_str_node_role()] == CRole.WORKER:
             while not self.__push_stream_end_point(end_point[Definition.get_str_node_addr()],

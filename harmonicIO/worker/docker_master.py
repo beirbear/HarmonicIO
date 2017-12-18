@@ -98,6 +98,9 @@ class DockerMaster(object):
                                                detach=True,
                                                ports=get_ports_setting(expose_port, port),
                                                environment=get_env_setting(expose_port, port))
+            import time
+            time.sleep(1)
+            print(res.logs())
 
             if res:
                 SysOut.out_string("Container " + container_name + " is created!")
