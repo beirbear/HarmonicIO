@@ -108,8 +108,16 @@ class StreamConnector(object):
 
         try:
 
-            response = self.__connector.request('GET', self.__str_push_request + Definition.Master.get_str_push_req_container_ext(container_name, container_os, priority, self.__source_name, digest))
-            #print(response.body)
+            url = self.__str_push_request + Definition.Master.get_str_push_req_container_ext(container_name,
+                                                                                                 container_os, priority,
+                                                                                                 self.__source_name,
+                                                                                                 digest)
+
+            print('Sending request..')
+            print(url)
+
+            response = self.__connector.request('GET',
+                                                url)
             #print(response.status)
             #print(response.text)
 
@@ -248,7 +256,7 @@ class StreamConnector(object):
 
         counter = self.__max_try
         while not end_point:
-            time.sleep(self.__std_idle_time)
+            time.sleep(2)
             end_point = self.__get_stream_end_point(container_name, container_os, priority, digest)
             counter -= 1
             if counter == 0:

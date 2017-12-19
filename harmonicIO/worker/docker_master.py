@@ -65,6 +65,8 @@ class DockerMaster(object):
         res = []
         for item in self.__client.containers.list():
             res.append(get_container_status(item))
+            # To print all logs:
+            #print(item.logs(stdout=True, stderr=True))
 
         return res
 
@@ -93,17 +95,21 @@ class DockerMaster(object):
             SysOut.err_string("No more port available!")
             return False
         else:
-
+            print('starting container ' + container_name)
             res = self.__client.containers.run(container_name,
                                                detach=True,
+                                               stderr=True,
+                                               stdout=True,
                                                ports=get_ports_setting(expose_port, port),
                                                environment=get_env_setting(expose_port, port))
             import time
             time.sleep(1)
-            print(res.logs())
+            print('..created container, logs:')
+            print(res.logs(stdout=True,stderr=True))
 
             if res:
                 SysOut.out_string("Container " + container_name + " is created!")
+                SysOut.out_string("Container " + container_name + " is " + res.status + " ")
                 return True
             else:
                 SysOut.out_string("Container " + container_name + " cannot be created!")
