@@ -169,5 +169,6 @@ class Setting(object):
                             SysOut.out_string("Load setting successful.")
                     else:
                         SysOut.terminate_string("Required parameters are not present.")
-                except:
+                except Exception as e:
+                    print(e)
                     SysOut.terminate_string("Invalid data in configuration file.")

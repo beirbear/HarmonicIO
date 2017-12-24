@@ -1,5 +1,6 @@
 import os.path
 import subprocess
+from sys import platform
 from .colors import red, green, yellow, blue
 from .definition import Definition, CRole
 
@@ -50,9 +51,18 @@ class Services(object):
 
     @staticmethod
     def get_host_name_i(order=0):
-        import subprocess
         # get hostname as IP address (-i)
-        return subprocess.check_output(["hostname", "-I"]).decode('utf-8').strip().split()[order]
+        if platform == "linux" or platform == "linux2":
+            import subprocess
+            # get hostname as IP address (-i)
+            return subprocess.check_output(["hostname", "-I"]).decode('utf-8').strip().split()[order]
+        elif platform == "darwin": # OS X
+            # en0 = first, en1 = second.
+            import subprocess
+            return subprocess.check_output(["ipconfig", "getifaddr", "en0"]).decode('utf-8').strip()
+        elif platform == "win32":
+            # Windows...
+            raise Exception('not implemented!')
 
     @staticmethod
     def get_current_timestamp():

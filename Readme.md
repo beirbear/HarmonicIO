@@ -62,3 +62,13 @@ sc.send_data(config['container_name'],
              config['container_os'],
              message_bytes)
 ```
+
+
+Print the logs to check the container executed the task:
+```
+$ docker logs happy_jepsen 
+Listening for tasks...
+attempting to open local port: 0.0.0.0:80
+Streaming from  172.17.0.1 : 40742
+message was bytes: 125
+```
