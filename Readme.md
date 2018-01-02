@@ -15,56 +15,44 @@ Forked from https://github.com/beirbear/HarmonicIO
 
 Setup with master and worker on a single node:
 
-Install Docker
+* Install Docker
+* Install python3
 
-Clone and Install:
+* Clone and Install:
 ```
 $ git clone https://github.com/benblamey/HarmonicIO.git
 $ cd HarmonicIO
 $ pip3 install -e .
 ```
 
-Edit `master/configuration.json` and `worker/configuration.json` so that the addresses are for the local machine (localhost seems problematic).
+* Edit `harmonicIO/master/configuration.json` and `harmonicIO/worker/configuration.json` so that the addresses are for the local machine (localhost seems problematic).
 
-Start the master and worker:
+* Start the master and worker:
 ```
 $ ./runMaster.sh
 $ ./runWorker.sh
 ```
 
-Start an (example) processing container on the worker (localhost) node:
+* Start an (example) processing container on the worker (localhost) node (replacing <local-ip>):
 ```
 $ curl -X POST "http://<local-ip>:8081/docker?token=None&command=create" --data '{"c_name" : "benblamey/hio-example:latest", "num" : 1}'
 ```
 
-Check the container is running:
+* Check the container is running:
 ```
 $ docker ps
 CONTAINER ID        IMAGE                          COMMAND               CREATED             STATUS              PORTS                  NAMES
 5c6146b750ab        benblamey/hio-example:latest   "python example.py"   33 minutes ago      Up 33 minutes       0.0.0.0:9000->80/tcp   happy_jepsen
 ```
 
-Use the Stream Connector to send data:
+* Use the Stream Connector to send data:
 
 ```
-from harmonicIO.stream_connector.stream_connector import StreamConnector
-
-config = {'master_host': '<local-ip>',
-          'master_port': 8080,
-          'container_name': 'benblamey/hio-example:latest',
-          'container_os': 'ubuntu'}
-                       
-sc = StreamConnector(config['master_host'], config['master_port'], max_try=1, std_idle_time=1)
-
-message_bytes = b'test data'
-
-sc.send_data(config['container_name'],
-             config['container_os'],
-             message_bytes)
+$ python3 example_stream_connector.py
 ```
 
 
-Print the logs to check the container executed the task:
+* Print the logs to check the container executed the task:
 ```
 $ docker logs happy_jepsen 
 Listening for tasks...
