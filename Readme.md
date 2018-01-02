@@ -61,3 +61,6 @@ attempting to open local port: 0.0.0.0:80
 Streaming from  172.17.0.1 : 40742
 message was bytes: 125
 ```
+
+* Create your own processing container running the HarmonicPE processing daemon:
+https://github.com/benblamey/HarmonicPE
