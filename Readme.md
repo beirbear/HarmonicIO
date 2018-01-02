@@ -53,7 +53,7 @@ $ python3 example_stream_connector.py
 ```
 
 
-* Print the logs to check the container executed the task:
+* Print the logs of the container to check the output of the executed task (`message was bytes ...`):
 ```
 $ docker logs happy_jepsen 
 Listening for tasks...
