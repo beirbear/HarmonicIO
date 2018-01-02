@@ -241,7 +241,6 @@ class StreamConnector(object):
             SysOut.warn_string("Cannot stream data to an end point!")
 
     def send_data(self, container_name, container_os, data, priority=None):
-        print('send_data B')
         # The data must be byte array
         if not isinstance(data, bytearray):
             LocalError.err_invalid_data_container_type()
@@ -256,15 +255,12 @@ class StreamConnector(object):
 
         counter = self.__max_try
         while not end_point:
-            time.sleep(2)
             end_point = self.__get_stream_end_point(container_name, container_os, priority, digest)
             counter -= 1
             if counter == 0:
                 SysOut.err_string("Cannot contact server. Exceed maximum retry {0}!".format(self.__max_try))
                 return False
 
-
-        print('send_data A')
         counter = self.__max_try
         if end_point[Definition.get_str_node_role()] == CRole.WORKER:
             while not self.__push_stream_end_point(end_point[Definition.get_str_node_addr()],

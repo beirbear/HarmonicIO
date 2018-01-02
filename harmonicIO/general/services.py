@@ -56,7 +56,7 @@ class Services(object):
             import subprocess
             # get hostname as IP address (-i)
             return subprocess.check_output(["hostname", "-I"]).decode('utf-8').strip().split()[order]
-        elif platform == "darwin": # OS X
+        elif platform == "darwin":  # OS X
             # en0 = first, en1 = second.
             import subprocess
             return subprocess.check_output(["ipconfig", "getifaddr", "en0"]).decode('utf-8').strip()
