@@ -7,7 +7,7 @@ config = {'master_host': '192.168.0.84',
 
 sc = StreamConnector(config['master_host'], config['master_port'], max_try=1, std_idle_time=1)
 
-message_bytes = b'test data'
+message_bytes = bytearray('test data')
 
 sc.send_data(config['container_name'],
              config['container_os'],

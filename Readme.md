@@ -47,6 +47,7 @@ CONTAINER ID        IMAGE                          COMMAND               CREATED
 
 * Use the Stream Connector to send data:
 
+(Modify the script to use the correct IP address):
 ```
 $ python3 example_stream_connector.py
 ```
