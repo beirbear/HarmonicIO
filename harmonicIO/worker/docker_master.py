@@ -105,7 +105,7 @@ class DockerMaster(object):
             import time
             time.sleep(1)
             print('..created container, logs:')
-            print(res.logs(stdout=True,stderr=True))
+            print(res.logs(stdout=True, stderr=True))
 
             if res:
                 SysOut.out_string("Container " + container_name + " is created!")
