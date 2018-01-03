@@ -93,11 +93,15 @@ class MessagesQueue(object):
                 try:
                     s = socket.socket(af, socktype, proto)
                 except OSError as msg:
+                    print('error creating client socket')
+                    print(msg)
                     s = None
                     continue
                 try:
                     s.connect(sa)
                 except OSError as msg:
+                    print('error connecting client socket')
+                    print(msg)
                     s.close()
                     s = None
                     continue
