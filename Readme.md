@@ -64,3 +64,14 @@ message was bytes: 125
 
 * Create your own processing container running the HarmonicPE processing daemon:
 https://github.com/benblamey/HarmonicPE
+
+## Install the Streaming Connector only
+
+* Install python3, pip
+
+* Clone and Install:
+```
+$ git clone https://github.com/benblamey/HarmonicIO.git
+$ cd HarmonicIO
+$ pip3 install -e .
+```
