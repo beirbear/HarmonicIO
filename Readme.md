@@ -16,7 +16,7 @@ Forked from https://github.com/beirbear/HarmonicIO
 Setup with master and worker on a single node:
 
 * Install Docker
-* Install python3
+* Install python3, pip
 
 * Clone and Install:
 ```
@@ -27,20 +27,20 @@ $ pip3 install -e .
 
 * Edit `harmonicIO/master/configuration.json` and `harmonicIO/worker/configuration.json` so that the addresses are for the local machine (localhost seems problematic).
 
-* Start the master and worker:
+* Start the master and worker (separate [screen](http://aperiodic.net/screen/quick_reference) windows recommended):
 ```
-$ ./runMaster.sh
-$ ./runWorker.sh
+$ sudo ./runMaster.sh
+$ sudo ./runWorker.sh
 ```
 
-* Start an (example) processing container on the worker (localhost) node (replacing <local-ip>):
+* Start an (example) processing container on the worker (localhost) node (replacing `<local-ip>`):
 ```
 $ curl -X POST "http://<local-ip>:8081/docker?token=None&command=create" --data '{"c_name" : "benblamey/hio-example:latest", "num" : 1}'
 ```
 
 * Check the container is running:
 ```
-$ docker ps
+$ sudo docker ps
 CONTAINER ID        IMAGE                          COMMAND               CREATED             STATUS              PORTS                  NAMES
 5c6146b750ab        benblamey/hio-example:latest   "python example.py"   33 minutes ago      Up 33 minutes       0.0.0.0:9000->80/tcp   happy_jepsen
 ```
