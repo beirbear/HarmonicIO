@@ -63,7 +63,7 @@ class StreamConnector(object):
         self.__master_token = token
         self.__std_idle_time = std_idle_time
         self.__max_try = max_try
-        self.__data_pool = {}
+
 
         if source_name:
             self.__source_name = source_name
