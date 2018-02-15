@@ -4,8 +4,8 @@ Worker entry point.
 import threading
 import urllib3
 from .configuration import Setting
-from general.services import SysOut, Services
-from general.definition import Definition, CRole
+from harmonicIO.general.services import SysOut, Services
+from harmonicIO.general.definition import Definition, CRole
 
 
 def run_rest_service():
@@ -32,16 +32,19 @@ def update_worker_status():
 
     html = urllib3.PoolManager()
     try:
-        r = html.request('PUT', Definition.Master.get_str_check_master(Setting.get_master_addr(), Setting.get_master_port(), Setting.get_token()),
-                     body=str(s_content))
+        r = html.request('PUT', Definition.Master.get_str_check_master(Setting.get_master_addr(),
+                                                                       Setting.get_master_port(),
+                                                                       Setting.get_token()),
+                         body=str(s_content))
 
         if r.status != 200:
             SysOut.err_string("Cannot update worker status to the master!")
         else:
             SysOut.debug_string("Reports status to master node complete.")
 
-    except:
+    except Exception as e:
         SysOut.err_string("Master is not available!")
+        print(e)
 
 
 if __name__ == "__main__":

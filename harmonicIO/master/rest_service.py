@@ -1,8 +1,8 @@
 import falcon
 from .configuration import Setting
-from general.definition import Definition, CStatus, CRole
+from harmonicIO.general.definition import Definition, CStatus, CRole
 from .messaging_system import MessagesQueue
-from general.services import SysOut, Services as LService
+from harmonicIO.general.services import SysOut, Services as LService
 from .meta_table import LookUpTable
 
 

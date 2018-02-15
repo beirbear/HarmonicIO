@@ -5,8 +5,8 @@ import urllib3
 import time
 import socket
 import hashlib
-from general.services import SysOut, Services
-from general.definition import Definition, CRole
+from harmonicIO.general.services import SysOut, Services
+from harmonicIO.general.definition import Definition, CRole
 
 
 class LocalError(object):
@@ -63,7 +63,7 @@ class StreamConnector(object):
         self.__master_token = token
         self.__std_idle_time = std_idle_time
         self.__max_try = max_try
-        self.__data_pool = {}
+
 
         if source_name:
             self.__source_name = source_name
@@ -72,7 +72,7 @@ class StreamConnector(object):
             self.__source_name = socket.gethostname()
 
         # Connection string
-        from general.definition import Definition
+        from harmonicIO.general.definition import Definition
 
         self.__str_master_status = Definition.Master.get_str_check_master(server_addr, server_port, "None")
         self.__str_push_request = Definition.Master.get_str_push_req(server_addr, server_port, "None")
@@ -108,7 +108,18 @@ class StreamConnector(object):
 
         try:
 
-            response = self.__connector.request('GET', self.__str_push_request + Definition.Master.get_str_push_req_container_ext(container_name, container_os, priority, self.__source_name, digest))
+            url = self.__str_push_request + Definition.Master.get_str_push_req_container_ext(container_name,
+                                                                                                 container_os, priority,
+                                                                                                 self.__source_name,
+                                                                                                 digest)
+
+            print('Sending request..')
+            print(url)
+
+            response = self.__connector.request('GET',
+                                                url)
+            #print(response.status)
+            #print(response.text)
 
             if response.status == 406:
                 # Messages in queue is full. Result in queue lock.
@@ -120,9 +131,11 @@ class StreamConnector(object):
                 return False
 
             elif response.status != 200:
+                SysOut.warn_string("something else went wrong")
                 return False
 
-        except:
+        except Exception as ex:
+            print(ex)
             SysOut.err_string("Couldn't connect to the master at {0}:{1}.".format(self.__master_addr,
                                                                                   self.__master_port))
             return False
@@ -150,11 +163,13 @@ class StreamConnector(object):
                 try:
                     s = socket.socket(af, socktype, proto)
                 except OSError as msg:
+                    print(msg)
                     s = None
                     continue
                 try:
                     s.connect(sa)
                 except OSError as msg:
+                    print(msg)
                     s.close()
                     s = None
                     continue
@@ -189,11 +204,13 @@ class StreamConnector(object):
                 try:
                     s = socket.socket(af, socktype, proto)
                 except OSError as msg:
+                    print(msg)
                     s = None
                     continue
                 try:
                     s.connect(sa)
                 except OSError as msg:
+                    print(msg)
                     s.close()
                     s = None
                     continue
@@ -238,7 +255,6 @@ class StreamConnector(object):
 
         counter = self.__max_try
         while not end_point:
-            time.sleep(self.__std_idle_time)
             end_point = self.__get_stream_end_point(container_name, container_os, priority, digest)
             counter -= 1
             if counter == 0:
