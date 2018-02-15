@@ -27,7 +27,7 @@ def run_msg_service():
     # Exit the server thread when the main thread terminates
     server_thread.daemon = True
 
-    print("Enable Messaging System.")
+    print("Enable Messaging System on port " + str(Setting.get_data_port_start()))
 
     server_thread.start()
 
@@ -47,10 +47,10 @@ if __name__ == '__main__':
 
     # Print instance information
     print("Node name: {0}\nNode address: {1}".format(Setting.get_node_name(), Setting.get_node_addr()))
-    print("Port range: {0} to {1} ({2} ports available) ".format(Setting.get_data_port_start(),
-                                                                 Setting.get_data_port_stop(),
-                                                                 Setting.get_data_port_stop() -
-                                                                 Setting.get_data_port_start()))
+    # print("Port range: {0} to {1} ({2} ports available) ".format(Setting.get_data_port_start(),
+    #                                                              Setting.get_data_port_stop(),
+    #                                                              Setting.get_data_port_stop() -
+    #                                                              Setting.get_data_port_start()))
 
     # Create thread for handling REST Service
     from concurrent.futures import ThreadPoolExecutor
